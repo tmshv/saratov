@@ -89,36 +89,7 @@ function configure(viewer) {
 	return homeCameraView;
 }
 
-function load(viewer, homeCameraView) {
-	const scene = viewer.scene;
-
-	//////////////////////////////////////////////////////////////////////////
-	// Loading and Styling Entity Data
-	//////////////////////////////////////////////////////////////////////////
-
-	// var kmlOptions = {
-	// 	camera : viewer.scene.camera,
-	// 	canvas : viewer.scene.canvas,
-	// 	clampToGround : true
-	// };
-	// // Load geocache points of interest from a KML file
-	// // Data from : http://catalog.opendata.city/dataset/pediacities-nyc-neighborhoods/resource/91778048-3c58-449c-a3f9-365ed203e914
-	// var geocachePromise = Cesium.KmlDataSource.load('./Source/SampleData/sampleGeocacheLocations.kml', kmlOptions);
-
-	// // Add geocache billboard entities to scene and style them
-	// geocachePromise.then(function(dataSource) {
-	// 	// Add the new data as entities to the viewer
-	// 	viewer.dataSources.add(dataSource);
-
-	loadGeojsonAreas(viewer);
-	// initHover(viewer);
-	initClick(viewer);
-	// loadGeojsonArea(viewer);
-
-	// loadModel(viewer, homeCameraView);
-
-	return
-
+function load3dTiles(viewer, homeCameraView) {
 	//////////////////////////////////////////////////////////////////////////
 	// Load 3D Tileset
 	//////////////////////////////////////////////////////////////////////////
@@ -151,53 +122,10 @@ function load(viewer, homeCameraView) {
 		// homeCameraView.destination = offsetPosition;
 	});
 
-	// DRAW POLYGON
+	return viewer;
+}
 
-	// var wyoming = viewer.entities.add({
-	// 	name : 'Wyoming',
-	// 	polygon : {
-	// 		hierarchy : Cesium.Cartesian3.fromDegreesArray([
-	// 			-109.080842,45.002073,
-	// 			// -105.91517,45.002073,
-	// 			// -104.058488,44.996596,
-	// 			// -104.053011,43.002989,
-	// 			// -104.053011,41.003906,
-	// 			// -105.728954,40.998429,
-	// 			-107.919731,41.003906,
-	// 			// -109.04798,40.998429,
-	// 			// -111.047063,40.998429,
-	// 			// -111.047063,42.000709,
-	// 			// -111.047063,44.476286,
-	// 			-111.05254,45.002073]),
-	// 		height : 0,
-	// 		material : Cesium.Color.RED.withAlpha(0.5),
-	// 		outline : true,
-	// 		outlineColor : Cesium.Color.BLACK
-	// 	}
-	// });
-	// wyoming.polygon.extrudedHeight = 2500000;
-	// viewer.zoomTo(wyoming);
-
-	// DRAW 3D
-
-	// var entity = viewer.entities.add({
-	// 	// position : Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 1000),
-	// 	position: Cesium.Cartesian3.fromDegrees(
-	// 		46.0363,
-	// 		51.5353403,
-	// 		10,
-	// 	),
-	// 	model: {
-	// 		uri: './Source/SampleData/Models/BlenderBox.gltf'
-	// 		// uri: './Source/SampleData/Models/boxes.gltf'
-	// 	}
-	// });
-
-	// viewer.trackedEntity = entity;
-	// viewer.trackedEntity = city;
-
-	return;
-
+function loadWorkshow3dTiles(viewer) {
 	//////////////////////////////////////////////////////////////////////////
 	// Style 3D Tileset
 	//////////////////////////////////////////////////////////////////////////
@@ -247,7 +175,37 @@ function load(viewer, homeCameraView) {
 	}
 
 	tileStyle.addEventListener('change', set3DTileStyle);
+}
 
+function loadWyoming(viewer) {
+	var wyoming = viewer.entities.add({
+		name: 'Wyoming',
+		polygon: {
+			hierarchy: Cesium.Cartesian3.fromDegreesArray([
+				-109.080842, 45.002073,
+				// -105.91517,45.002073,
+				// -104.058488,44.996596,
+				// -104.053011,43.002989,
+				// -104.053011,41.003906,
+				// -105.728954,40.998429,
+				-107.919731, 41.003906,
+				// -109.04798,40.998429,
+				// -111.047063,40.998429,
+				// -111.047063,42.000709,
+				// -111.047063,44.476286,
+				-111.05254, 45.002073]),
+			height: 0,
+			material: Cesium.Color.RED.withAlpha(0.5),
+			outline: true,
+			outlineColor: Cesium.Color.BLACK
+		}
+	});
+	wyoming.polygon.extrudedHeight = 2500000;
+	viewer.zoomTo(wyoming);
+}
+
+
+function initMouseInteraction(viewer) {
 	//////////////////////////////////////////////////////////////////////////
 	// Custom mouse interaction for highlighting and selecting
 	//////////////////////////////////////////////////////////////////////////
@@ -270,7 +228,9 @@ function load(viewer, homeCameraView) {
 			previousPickedEntity = pickedEntity;
 		}
 	}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+}
 
+function setupCameraModes(viewer) {
 	//////////////////////////////////////////////////////////////////////////
 	// Setup Camera Modes
 	//////////////////////////////////////////////////////////////////////////
@@ -297,23 +257,57 @@ function load(viewer, homeCameraView) {
 			droneModeElement.checked = true;
 		}
 	});
+}
+
+function load(viewer, homeCameraView) {
+	const scene = viewer.scene;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Loading and Styling Entity Data
+	//////////////////////////////////////////////////////////////////////////
+
+	// var kmlOptions = {
+	// 	camera : viewer.scene.camera,
+	// 	canvas : viewer.scene.canvas,
+	// 	clampToGround : true
+	// };
+	// // Load geocache points of interest from a KML file
+	// // Data from : http://catalog.opendata.city/dataset/pediacities-nyc-neighborhoods/resource/91778048-3c58-449c-a3f9-365ed203e914
+	// var geocachePromise = Cesium.KmlDataSource.load('./Source/SampleData/sampleGeocacheLocations.kml', kmlOptions);
+
+	// // Add geocache billboard entities to scene and style them
+	// geocachePromise.then(function(dataSource) {
+	// 	// Add the new data as entities to the viewer
+	// 	viewer.dataSources.add(dataSource);
+
+	loadGeojsonAreas(viewer);
+	// initHover(viewer);
+	initClick(viewer);
+	// loadGeojsonArea(viewer);
+	loadModel(viewer, homeCameraView);
+	// loadWyoming(viewer);
+	// load3dTiles(viewer, homeCameraView);
+	// loadWorkshow3dTiles(viewer);
+
+	initMouseInteraction(viewer);
+	// setupCameraModes(viewer);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Setup Display Options
 	//////////////////////////////////////////////////////////////////////////
 
-	var shadowsElement = document.getElementById('shadows');
-	var neighborhoodsElement = document.getElementById('neighborhoods');
-
-	shadowsElement.addEventListener('change', function (e) {
-		viewer.shadows = e.target.checked;
-	});
-
-	neighborhoodsElement.addEventListener('change', function (e) {
-		neighborhoods.show = e.target.checked;
-		tileStyle.value = 'transparent';
-		// city.style = transparentStyle;
-	});
+	// var shadowsElement = document.getElementById('shadows');
+	// var neighborhoodsElement = document.getElementById('neighborhoods');
+	//
+	// shadowsElement.addEventListener('change', function (e) {
+	// 	viewer.shadows = e.target.checked;
+	// });
+	//
+	// neighborhoodsElement.addEventListener('change', function (e) {
+	// 	neighborhoods.show = e.target.checked;
+	// 	tileStyle.value = 'transparent';
+	// 	// city.style = transparentStyle;
+	// });
 
 	// Finally, wait for the initial city to be ready before removing the loading indicator.
 	// var loadingIndicator = document.getElementById('loadingIndicator');
@@ -325,6 +319,27 @@ function load(viewer, homeCameraView) {
 
 function loadModel(viewer, homeCameraView) {
 	const scene = viewer.scene;
+
+	//1
+
+	// var entity = viewer.entities.add({
+	// 	// position : Cesium.Cartesian3.fromDegrees(-123.0744619, 44.0503706, 1000),
+	// 	position: Cesium.Cartesian3.fromDegrees(
+	// 		46.0363,
+	// 		51.5353403,
+	// 		10,
+	// 	),
+	// 	model: {
+	// 		uri: './Source/SampleData/Models/BlenderBox.gltf'
+	// 		// uri: './Source/SampleData/Models/boxes.gltf'
+	// 	}
+	// });
+
+	// viewer.trackedEntity = entity;
+	// viewer.trackedEntity = city;
+
+
+	//2
 
 	// Load a drone flight path from a CZML file
 	// var dronePromise = Cesium.CzmlDataSource.load('./Source/SampleData/SampleFlight.czml');
@@ -463,15 +478,6 @@ function loadGeojsonArea(viewer) {
 	});
 }
 
-// function rgba([r, g, b]) {
-// 	return {
-// 		red: r / 255,
-// 		green: g / 255,
-// 		blue: b / 255,
-// 		alpha: 1,
-// 	}
-// }
-
 function getAreaMaterial(entity) {
 	const type = entity.properties.layer_name.getValue();
 	// const type = entity.getProperty('layer_name');
@@ -552,7 +558,7 @@ function loadGeojsonAreas(viewer) {
 						entity.polygon.material = getAreaMaterial(entity);
 						// entity.polygon.outline = false;
 						entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-						entity.polygon.outlineWidth = 5;
+						entity.polygon.outlineWidth = 1;
 
 						// entity.stroke = Cesium.Color.HOTPINK;
 
@@ -576,74 +582,6 @@ function loadGeojsonAreas(viewer) {
 					}
 				})
 		});
-}
-
-function initHover(viewer) {
-	let current;
-
-	function highlightOn(entity) {
-		if (entity === current) return;
-
-		highlightOff();
-		entity.polygon.material = new Cesium.Color(1.0, 1.0, 1.0, 0.5);
-		entity.polygon.outlineColor = new Cesium.Color(1.0, 1.0, 1.0, 1.0);
-		// entity.polygon.outlineWidth = 2;
-		current = entity;
-	}
-
-	function highlightOff() {
-		if (current) {
-			current.polygon.material = getAreaMaterial(current);
-			entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-		}
-		current = null;
-	}
-
-	function onMouseMove(movement) {
-		// // If a feature was previously highlighted, undo the highlight
-		// if (Cesium.defined(highlighted.feature)) {
-		// 	highlighted.feature.color = highlighted.originalColor;
-		// 	highlighted.feature = undefined;
-		// }
-
-		// Pick a new feature
-		var pickedFeature = viewer.scene.pick(movement.endPosition);
-		if (!Cesium.defined(pickedFeature)) {
-			highlightOff();
-		} else {
-			// console.log(pickedFeature.id)
-
-			// A feature was picked, so show it's overlay content
-			// nameOverlay.style.display = 'block';
-			// nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
-			// nameOverlay.style.left = movement.endPosition.x + 'px';
-			// var name = pickedFeature.getProperty('name');
-			// if (!Cesium.defined(name)) {
-			// 	name = pickedFeature.getProperty('id');
-			// }
-			// nameOverlay.textContent = name;
-
-			// pickedFeature.color = Cesium.Color.YELLOW;
-			// pickedFeature.color = Cesium.Color.WHITE;
-
-			// if (current) {
-			// 	highlightOff(current);
-			// }
-
-			highlightOn(pickedFeature.id);
-			// pickedFeature.id.polygon.outline = true;
-
-			// Highlight the feature if it's not already selected.
-			// if (pickedFeature !== selected.feature) {
-			// 	highlighted.feature = pickedFeature;
-			// 	Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
-			// 	pickedFeature.color = Cesium.Color.YELLOW;
-			// }
-		}
-	}
-
-	// Color a feature yellow on hover.
-	viewer.screenSpaceEventHandler.setInputAction(onMouseMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 }
 
 function initClick(viewer) {
