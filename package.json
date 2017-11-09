@@ -1,0 +1,21 @@
+{
+  "name": "saratov-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A JavaScript app with with Cesium, the open-source WebGL virtual globe and map engine.",
+  "homepage": "http://serverkb.strelka.com",
+  "license": "Proprietari",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnalyticalGraphicsInc/cesium-workshop"
+  },
+  "dependencies": {
+    "express": "^4.15",
+    "compression": "^1.6.2",
+    "request": "^2.79.0",
+    "yargs": "^8.0.1"
+  },
+  "engines": {
+    "node": "8.9.x"
+  }
+}
