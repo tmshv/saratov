@@ -1,13 +1,60 @@
+/**
+ * EPSG:3857 CRS -> EPSG:4326 WSG84
+ * @param x
+ * @param y
+ * @returns {LatLon}
+ */
+function project(x, y) {
+	class Transform {
+		constructor(a, b, c, d) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+			this.d = d;
+		}
+
+		untransform(x, y, scale) {
+			return {
+				x: (x / scale - this.b) / this.a,
+				y: (y / scale - this.d) / this.c,
+			}
+		}
+	}
+
+	const R = 6378137;
+	const t = new Transform(1, 0, -1, 0);
+	const d = 180 / Math.PI;
+	const scale = 1;
+	const point = t.untransform(x, y, scale);
+	const lat = (2 * Math.atan(Math.exp(y / R)) - (Math.PI / 2)) * d;
+	const lon = (x * d / R);
+
+	return {lat, lon};
+}
+
 function loadImagery(viewer) {
 	//////////////////////////////////////////////////////////////////////////
 	// Loading Imagery
 	//////////////////////////////////////////////////////////////////////////
 
-	// Add Bing imagery
+	return loadOsmImagery(viewer);
+}
+
+function loadBingImagery(viewer) {
 	viewer.imageryLayers.addImageryProvider(new Cesium.BingMapsImageryProvider({
 		url: 'https://dev.virtualearth.net',
 		mapStyle: Cesium.BingMapsStyle.AERIAL // Can also use Cesium.BingMapsStyle.ROAD
 	}));
+
+	return viewer;
+}
+
+function loadOsmImagery(viewer) {
+	viewer.imageryLayers.addImageryProvider(Cesium.createOpenStreetMapImageryProvider({
+		url: 'https://a.tile.openstreetmap.org/'
+	}));
+
+	return viewer;
 }
 
 function loadTerrain(viewer) {
@@ -42,8 +89,8 @@ function configure(viewer) {
 	// var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306);
 
 	var initialPosition = new Cesium.Cartesian3.fromDegrees(
-		46.0363,
-		51.5353403,
+		46.0319684578321,
+		51.532937475728112,
 		1000,
 	);
 
@@ -89,38 +136,37 @@ function configure(viewer) {
 	return homeCameraView;
 }
 
-function load3dTiles(viewer, homeCameraView) {
+function load3dTiles(viewer, url) {
 	//////////////////////////////////////////////////////////////////////////
 	// Load 3D Tileset
 	//////////////////////////////////////////////////////////////////////////
 
-	// Load the NYC buildings tileset
-	// var city = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
-	//     url: 'https://beta.cesium.com/api/assets/1461?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYWJmM2MzNS02OWM5LTQ3OWItYjEyYS0xZmNlODM5ZDNkMTYiLCJpZCI6NDQsImFzc2V0cyI6WzE0NjFdLCJpYXQiOjE0OTkyNjQ3NDN9.vuR75SqPDKcggvUrG_vpx0Av02jdiAxnnB1fNf-9f7s',
-	//     maximumScreenSpaceError: 16 // default value
-	// }));
+	// Load the tileset
+	const tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
+		url,
+		maximumScreenSpaceError: 16, // default value
 
-	// Load the NYC buildings tileset
-	var city = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
-		url: './Source/SampleData/Tileset',
-		maximumScreenSpaceError: 16 // default value
+		// debugShowBoundingVolume: true,
+		// debugShowContentBoundingVolume: true,
+		// debugShowUrl: true,
+		// debugWireframe: true,
 	}));
 
 	// Adjust the tileset height so it's not floating above terrain
-	var heightOffset = -32;
-	city.readyPromise.then(function (tileset) {
-		// Position tileset
-		var boundingSphere = tileset.boundingSphere;
-		var cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
-		var surfacePosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
-		var offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
-		var translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
-		tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+	// var heightOffset = -32;
+	var heightOffset = 0;
+	tileset.readyPromise
+		.then(function (tileset) {
+			// Position tileset
+			const boundingSphere = tileset.boundingSphere;
+			const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+			const surfacePosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+			const offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+			const translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
+			tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
 
-		// homeCameraView.destination = translation;
-		// homeCameraView.destination = tileset.modelMatrix;
-		// homeCameraView.destination = offsetPosition;
-	});
+			// pickedFeature.color = Cesium.Color.YELLOW;
+		});
 
 	return viewer;
 }
@@ -280,16 +326,22 @@ function load(viewer, homeCameraView) {
 	// 	// Add the new data as entities to the viewer
 	// 	viewer.dataSources.add(dataSource);
 
-	loadGeojsonAreas(viewer);
+	// loadGeojsonAreas(viewer);
 	// initHover(viewer);
-	initClick(viewer);
+	// initClick(viewer);
 	// loadGeojsonArea(viewer);
-	loadModel(viewer, homeCameraView);
+	// loadModel(viewer, homeCameraView);
+
+	// load3dTiles(viewer, './Source/SampleData/20171115-Define-Tileset');
+	// load3dTiles(viewer, './Source/SampleData/20171115-Neutral-Tileset');
+
+	// loadModelRTC(viewer, homeCameraView);
+	// loadLocalZeroModel(viewer, homeCameraView);
+	// loadModel11(viewer, homeCameraView);
 	// loadWyoming(viewer);
-	// load3dTiles(viewer, homeCameraView);
 	// loadWorkshow3dTiles(viewer);
 
-	initMouseInteraction(viewer);
+	// initMouseInteraction(viewer);
 	// setupCameraModes(viewer);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -378,12 +430,14 @@ function loadModel(viewer, homeCameraView) {
 	// 		51.520526201760561,
 	// 		0.0));
 
+
 	var model = scene.primitives.add(Cesium.Model.fromGltf({
 		// url: './Source/SampleData/Models/BlenderBox.gltf',
-		url: './Source/SampleData/Models/saratov-test-solid-b.gltf',
+		// url: './Source/SampleData/Models/saratov-test-solid-b.gltf',
+		url: './Source/SampleData/Models/saratov-test-solid-b-crtc.gltf',
 		// url: './Source/SampleData/Models/G.gltf',
 		// url: './Source/SampleData/Models/CesiumDrone.gltf',
-		modelMatrix: modelMatrix,
+		// modelMatrix: modelMatrix,
 		scale: 1,
 	}));
 
@@ -396,6 +450,171 @@ function loadModel(viewer, homeCameraView) {
 	homeCameraView.destination = position;
 	return model;
 }
+
+function loadLocalZeroModel(viewer, homeCameraView) {
+	const scene = viewer.scene;
+
+	// var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(coord);
+	var modelMatrix = Cesium.Matrix4.fromArray([
+		-0.7197097780920244, 0.6942750429899731, 0, 0,
+		-0.5436004965466359, -0.5635152763887322, 0.6220522754807523, 0,
+		0.4318753703014098, 0.44769710514789113, 0.7829757126304866, 0,
+		2760230.0887004705, 2861350.99436411, 4970705.486733208, 1
+	]);
+
+	const model = Cesium.Model.fromGltf({
+		url: './Source/SampleData/Models/Building.gltf',
+		modelMatrix,
+
+		// debugShowBoundingVolume: true,
+		// debugWireframe: true,
+	})
+	scene.primitives.add(model);
+
+	return viewer;
+}
+
+
+function loadModelRTC(viewer, homeCameraView) {
+	const scene = viewer.scene;
+
+	// createModel(viewer, './Source/SampleData/Models/20171112-blender-local-rtc.gltf');
+	// createModel(viewer, './Source/SampleData/Models/20171112-maked.gltf');
+
+	// return;
+
+	// let {lat, lon} = project(5124255, 6716110);
+	// let {lat, lon} = project(5124380, 6716020);
+	// let [lon, lat] = [0, 0];
+
+	// let [lon, lat] = [51.529049848119428, 46.056730168853719];
+
+	let [lon, lat] = [46.056730168853719, 51.529049848119428]; // saratov
+	// 2759210.773344021,
+	// 2862913.74005522,
+	// 4970373.802717846
+
+
+	// let [lon, lat] = [31.0376134, 59.9480024]; // shlisselburg
+	// 2743669.5383761963,
+	// 1651015.3810088835,
+	// 5497578.283508389
+
+	// lon = 46.056730168853719;
+	// lat = 51.529049848119428;
+	const coord = Cesium.Cartesian3.fromDegrees(
+		lon,
+		lat,
+		0.0,
+	)
+
+	//Create a Cartesian and determine it's Cartographic representation on a WGS84 ellipsoid.
+	// var cartographicPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(coord);
+	// console.log("E", cartographicPosition);
+
+	var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(coord);
+	// var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(
+	// 	coord,
+	// 	new Cesium.HeadingPitchRoll(),
+	// );
+
+	// console.log({lat, lon})
+	console.log('Lat Lon', lat, lon)
+	console.log('C3', coord)
+	console.log('M', modelMatrix)
+
+	// {
+	// 	"x": 2759864.7289731577,
+	// 	"y": 2861529.68616091,
+	// 	"z": 4970857.325440574
+	// }
+
+	const model = Cesium.Model.fromGltf({
+		// url: './Source/SampleData/Models/20171112-maked.gltf',
+		// url: './Source/SampleData/Models/20171112-blender-local-rtc.gltf',
+		url: './Source/SampleData/Models/BuildingOriented.gltf',
+
+		// url: './Source/SampleData/Models/20171112-blender-local.gltf',
+		// modelMatrix,
+
+		// debugShowBoundingVolume: true,
+		// debugWireframe: true,
+	})
+	scene.primitives.add(model);
+
+	// model.readyPromise.then(x => {
+	// 	console.log(x);
+	// })
+
+	model.readyPromise
+		.then(function (model) {
+			var camera = viewer.camera;
+			var r = 2.0 * Math.max(model.boundingSphere.radius, camera.frustum.near);
+			var center = Cesium.Matrix4.multiplyByPoint(model.modelMatrix, model.boundingSphere.center, new Cesium.Cartesian3());
+			var heading = Cesium.Math.toRadians(230.0);
+			var pitch = Cesium.Math.toRadians(-20.0);
+			camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, r * 2.0));
+
+			console.log("BS", model.boundingSphere)
+			console.log("MM", model.modelMatrix)
+
+			// homeCameraView.destination = center;
+
+			const heightOffset = 100;
+			const boundingSphere = model.boundingSphere;
+			const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+			const surfacePosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+			const offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+			const translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
+			// model.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+		})
+		.otherwise(function (error) {
+			window.alert(error);
+		});
+
+	// var position = Cesium.Matrix4.getTranslation(modelMatrix, new Cesium.Cartesian3());
+	// homeCameraView.destination = coord;
+
+	return viewer;
+}
+
+function createModel(viewer, url) {
+	var entity = viewer.entities.add({
+		name: url,
+		position: Cesium.Cartesian3.ZERO,
+		orientation: Cesium.Quaternion.IDENTITY,
+		model: {
+			uri: url
+		}
+	});
+	viewer.trackedEntity = entity;
+}
+
+//
+function loadModel11(viewer, homeCameraView) {
+	const scene = viewer.scene;
+
+	const {lat, lon} = project(5124380.0, 6716020.0);
+
+	var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(
+		// 46.056730168853719,
+		// 51.529049848119428,
+		lon,
+		lat,
+		0.0,
+	));
+
+	var model = scene.primitives.add(Cesium.Model.fromGltf({
+		url: './Source/SampleData/Models/20171111-saratov-buildings-sample0-obj.gltf',
+		modelMatrix: modelMatrix,
+		scale: 1,
+	}));
+
+	var position = Cesium.Matrix4.getTranslation(modelMatrix, new Cesium.Cartesian3());
+	homeCameraView.destination = position;
+	return model;
+}
+
 
 function loadGeojsonArea(viewer) {
 	var geojsonOptions = {
@@ -486,7 +705,7 @@ function getAreaMaterial(entity) {
 		red: r / 255,
 		green: g / 255,
 		blue: b / 255,
-		alpha: 1,
+		alpha: .5,
 	})
 
 	const types = {
@@ -649,6 +868,13 @@ function main() {
 	const homeCameraView = configure(viewer);
 
 	load(viewer, homeCameraView);
+
+	loadGeojsonAreas(viewer);
+	// initHover(viewer);
+	initClick(viewer);
+
+	load3dTiles(viewer, './Source/SampleData/20171115-Define-Tileset');
+	load3dTiles(viewer, './Source/SampleData/20171115-Neutral-Tileset');
 }
 
 main();
