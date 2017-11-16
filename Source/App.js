@@ -1,3 +1,5 @@
+import './ui';
+
 /**
  * EPSG:3857 CRS -> EPSG:4326 WSG84
  * @param x
@@ -306,8 +308,8 @@ function loadModel(viewer, homeCameraView) {
 	// 		10,
 	// 	),
 	// 	model: {
-	// 		uri: './Source/SampleData/Models/BlenderBox.gltf'
-	// 		// uri: './Source/SampleData/Models/boxes.gltf'
+	// 		uri: './Data/Models/BlenderBox.gltf'
+	// 		// uri: './Data/Models/boxes.gltf'
 	// 	}
 	// });
 
@@ -318,7 +320,7 @@ function loadModel(viewer, homeCameraView) {
 	//2
 
 	// Load a drone flight path from a CZML file
-	// var dronePromise = Cesium.CzmlDataSource.load('./Source/SampleData/SampleFlight.czml');
+	// var dronePromise = Cesium.CzmlDataSource.load('./Data/SampleFlight.czml');
 
 	// Save a new drone model entity
 	// var drone;
@@ -327,7 +329,7 @@ function loadModel(viewer, homeCameraView) {
 	//     drone = dataSource.entities.values[0];
 	//     // Attach a 3D model
 	//     drone.model = {
-	//         uri : './Source/SampleData/Models/CesiumDrone.gltf',
+	//         uri : './Data/Models/CesiumDrone.gltf',
 	//         minimumPixelSize : 128,
 	//         maximumScale : 2000
 	//     };
@@ -356,11 +358,11 @@ function loadModel(viewer, homeCameraView) {
 
 
 	var model = scene.primitives.add(Cesium.Model.fromGltf({
-		// url: './Source/SampleData/Models/BlenderBox.gltf',
-		// url: './Source/SampleData/Models/saratov-test-solid-b.gltf',
-		url: './Source/SampleData/Models/saratov-test-solid-b-crtc.gltf',
-		// url: './Source/SampleData/Models/G.gltf',
-		// url: './Source/SampleData/Models/CesiumDrone.gltf',
+		// url: './Data/Models/BlenderBox.gltf',
+		// url: './Data/Models/saratov-test-solid-b.gltf',
+		url: './Data/Models/saratov-test-solid-b-crtc.gltf',
+		// url: './Data/Models/G.gltf',
+		// url: './Data/Models/CesiumDrone.gltf',
 		// modelMatrix: modelMatrix,
 		scale: 1,
 	}));
@@ -387,7 +389,7 @@ function loadLocalZeroModel(viewer, homeCameraView) {
 	]);
 
 	const model = Cesium.Model.fromGltf({
-		url: './Source/SampleData/Models/Building.gltf',
+		url: './Data/Models/Building.gltf',
 		modelMatrix,
 
 		// debugShowBoundingVolume: true,
@@ -402,8 +404,8 @@ function loadLocalZeroModel(viewer, homeCameraView) {
 function loadModelRTC(viewer, homeCameraView) {
 	const scene = viewer.scene;
 
-	// createModel(viewer, './Source/SampleData/Models/20171112-blender-local-rtc.gltf');
-	// createModel(viewer, './Source/SampleData/Models/20171112-maked.gltf');
+	// createModel(viewer, './Data/Models/20171112-blender-local-rtc.gltf');
+	// createModel(viewer, './Data/Models/20171112-maked.gltf');
 
 	// return;
 
@@ -454,11 +456,11 @@ function loadModelRTC(viewer, homeCameraView) {
 	// }
 
 	const model = Cesium.Model.fromGltf({
-		// url: './Source/SampleData/Models/20171112-maked.gltf',
-		// url: './Source/SampleData/Models/20171112-blender-local-rtc.gltf',
-		url: './Source/SampleData/Models/BuildingOriented.gltf',
+		// url: './Data/Models/20171112-maked.gltf',
+		// url: './Data/Models/20171112-blender-local-rtc.gltf',
+		url: './Data/Models/BuildingOriented.gltf',
 
-		// url: './Source/SampleData/Models/20171112-blender-local.gltf',
+		// url: './Data/Models/20171112-blender-local.gltf',
 		// modelMatrix,
 
 		// debugShowBoundingVolume: true,
@@ -595,8 +597,8 @@ function loadGeojsonAreas(viewer) {
 	// 	markerSymbol: '?'
 	// }
 
-	const url = './Source/SampleData/Models/saratov-areas-sample.geojson'
-	// const url = './Source/SampleData/Models/saratov-areas.geojson'
+	const url = './Data/Models/saratov-areas-sample.geojson'
+	// const url = './Data/Models/saratov-areas.geojson'
 
 	// Load neighborhood boundaries from a GeoJson file
 	return Cesium.GeoJsonDataSource
@@ -776,7 +778,7 @@ function main() {
 	});
 	// viewer.shadows = true;
 
-	viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date(2017, 10, 16, 09, 00));
+	viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date(2017, 10, 16, 9, 0));
 	viewer.clock.multiplier = 1;
 	viewer.clock.shouldAnimate = true //if it was paused.
 
@@ -796,22 +798,20 @@ function main() {
 	// loadingIndicator.style.display = 'none';
 	// });
 
-	// load3dTiles(viewer, './Source/SampleData/20171116-Sample');
-	// load3dTiles(viewer, './Source/SampleData/20171116-Susch-Tileset');
-	// load3dTiles(viewer, './Source/SampleData/20171115-Define2-Tileset');
-	// load3dTiles(viewer, './Source/SampleData/20171115-Neutral2-Tileset');
+	// load3dTiles(viewer, './Data/20171116-Sample');
+	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
+	// load3dTiles(viewer, './Data/20171115-Define2-Tileset');
+	// load3dTiles(viewer, './Data/20171115-Neutral2-Tileset');
 
-	// loadGeojsonAreas(viewer, './Source/SampleData/Models/saratov-areas-sample.geojson');
+	// loadGeojsonAreas(viewer, './Data/Models/saratov-areas-sample.geojson');
 
-	// loadGeojson(viewer, './Source/SampleData/Models/green-1.geojson');
-	loadGeojson(viewer, './Source/SampleData/Models/green-2.geojson');
-	// loadGeojson(viewer, './Source/SampleData/Models/roads.geojson');
+	// loadGeojson(viewer, './Data/Models/green-1.geojson');
+	// loadGeojson(viewer, './Data/Models/green-2.geojson');
+	// loadGeojson(viewer, './Data/Models/roads.geojson');
 
 	// loadGeojsonAreas(viewer);
 	initClick(viewer);
 	// initTileClick(viewer);
-
-
 }
 
 main();

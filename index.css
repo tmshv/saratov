@@ -66,3 +66,11 @@ button.cesium-infoBox-camera {
 #3DTiles {
     padding-top: 10px;
 }
+
+#ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: white;
+}
