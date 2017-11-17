@@ -1,9 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-
-const App = () => (
-	<div>Hello</div>
-)
+import App from './components/App';
 
 const mountPoint = document.querySelector('#ui');
 render(<App/>, mountPoint);

@@ -1,4 +1,5 @@
 import './ui';
+import {selectedFeatureSignal} from './signals';
 
 /**
  * EPSG:3857 CRS -> EPSG:4326 WSG84
@@ -521,6 +522,8 @@ function loadGeojson(viewer, url) {
 		clampToGround: true,
 		// strokeWidth: 2,
 		// stroke: Cesium.Color.WHITE,
+		// stroke: Cesium.Color.WHITE,
+		fill: new Cesium.Color(rgba([157, 176, 146])),
 	};
 
 	// Load neighborhood boundaries from a GeoJson file
@@ -535,10 +538,10 @@ function loadGeojson(viewer, url) {
 					if (Cesium.defined(entity.polygon)) {
 
 						// Set the polygon material to a random, translucent color
-						entity.polygon.material = new Cesium.Color(rgba([0, 200, 0]));
+						// entity.polygon.material = new Cesium.Color(rgba([157, 176, 146]));
 						// entity.polygon.outline = false;
-						entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-						entity.polygon.outlineWidth = 1;
+						// entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
+						// entity.polygon.outlineWidth = 1;
 
 						// entity.stroke = Cesium.Color.HOTPINK;
 					}
@@ -550,7 +553,7 @@ const rgba = ([r, g, b]) => ({
 	red: r / 255,
 	green: g / 255,
 	blue: b / 255,
-	alpha: .5,
+	alpha: 1,
 })
 
 function getAreaMaterial(entity) {
@@ -652,51 +655,6 @@ function loadGeojsonAreas(viewer) {
 		});
 }
 
-function initClick(viewer) {
-	// Information about the currently selected feature
-	let selected = null;
-
-	// Color a feature on selection and show metadata in the InfoBox.
-	var clickHandler = viewer.screenSpaceEventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-	function onLeftClick(event) {
-		return;
-		// If a feature was previously selected, undo the highlight
-		if (selected) {
-			selected.id.polygon.material = getAreaMaterial(selected.id);
-			selected = null;
-		}
-
-		// Pick a new feature
-		var pickedFeature = viewer.scene.pick(event.position);
-
-		if (!pickedFeature) {
-			clickHandler(event);
-			return;
-		}
-
-		selected = pickedFeature;
-
-		// Highlight newly selected feature
-		selected.id.polygon.material = new Cesium.Color(1.0, 1.0, 1.0, 0.5);
-
-		// Set feature infobox description
-		// var featureName = pickedFeature.getProperty('name');
-		// selectedEntity.name = featureName;
-		// selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
-		// viewer.selectedEntity = selectedEntity;
-		// selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' +
-		// 	'<tr><th>BIN</th><td>' + pickedFeature.getProperty('BIN') + '</td></tr>' +
-		// 	'<tr><th>DOITT ID</th><td>' + pickedFeature.getProperty('DOITT_ID') + '</td></tr>' +
-		// 	'<tr><th>SOURCE ID</th><td>' + pickedFeature.getProperty('SOURCE_ID') + '</td></tr>' +
-		// 	'</tbody></table>';
-
-		clickHandler(event);
-	}
-
-	viewer.screenSpaceEventHandler.setInputAction(onLeftClick, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-}
-
 function initTileClick(viewer) {
 	// Information about the currently selected feature
 	let selected = null;
@@ -729,9 +687,13 @@ function initTileClick(viewer) {
 			// console.log('Pick', pickedFeature.content.getFeature(0).getPropertyNames());
 			console.log('Pick', attributes);
 
-			selectedEntity.name = attributes['name'];
+			selectedFeatureSignal.trigger(attributes);
+
+			// selectedEntity.name = attributes['name'];
 			// selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
-			viewer.selectedEntity = selectedEntity;
+			// viewer.selectedEntity = selectedEntity;
+		} else {
+			selectedFeatureSignal.trigger(null);
 		}
 
 		// if (!pickedFeature) {
@@ -805,13 +767,12 @@ function main() {
 
 	// loadGeojsonAreas(viewer, './Data/Models/saratov-areas-sample.geojson');
 
-	// loadGeojson(viewer, './Data/Models/green-1.geojson');
+	loadGeojson(viewer, './Data/Models/green-1.geojson');
 	// loadGeojson(viewer, './Data/Models/green-2.geojson');
 	// loadGeojson(viewer, './Data/Models/roads.geojson');
 
 	// loadGeojsonAreas(viewer);
-	initClick(viewer);
-	// initTileClick(viewer);
+	initTileClick(viewer);
 }
 
 main();
