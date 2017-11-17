@@ -660,7 +660,7 @@ function initTileClick(viewer) {
 	let selected = null;
 
 	// Color a feature on selection and show metadata in the InfoBox.
-	var clickHandler = viewer.screenSpaceEventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+	// var clickHandler = viewer.screenSpaceEventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 	// An entity object which will hold info about the currently selected feature for infobox display
 	let selectedEntity = new Cesium.Entity();
@@ -674,7 +674,8 @@ function initTileClick(viewer) {
 
 		// Pick a new feature
 		const pickedItem = viewer.scene.pick(event.position);
-		console.log('Pick', pickedItem);
+		// console.log('Pick', pickedItem);
+
 		if (pickedItem) {
 			const feature = pickedItem.content.getFeature(0)
 			const attributeNames = feature.getPropertyNames();
@@ -685,7 +686,7 @@ function initTileClick(viewer) {
 			// console.log('Pick', pickedFeature);
 			// console.log('Pick', pickedFeature.content.getFeature(0));
 			// console.log('Pick', pickedFeature.content.getFeature(0).getPropertyNames());
-			console.log('Pick', attributes);
+			// console.log('Pick', attributes);
 
 			selectedFeatureSignal.trigger(attributes);
 
@@ -706,23 +707,117 @@ function initTileClick(viewer) {
 		// Highlight newly selected feature
 		// selected.id.polygon.material = new Cesium.Color(1.0, 1.0, 1.0, 0.5);
 
-		// Set feature infobox description
-		// var featureName = pickedFeature.getProperty('name');
-		// selectedEntity.name = attributes['layer_name'];
-		// // selectedEntity.description = 'Loading <div class="cesium-infoBox-loading"></div>';
-		// viewer.selectedEntity = selectedEntity;
-		// selectedEntity.description = '<table class="cesium-infoBox-defaultTable"><tbody>' +
-		// 	'<tr><th>BIN</th><td>' + pickedFeature.getProperty('BIN') + '</td></tr>' +
-		// 	'<tr><th>DOITT ID</th><td>' + pickedFeature.getProperty('DOITT_ID') + '</td></tr>' +
-		// 	'<tr><th>SOURCE ID</th><td>' + pickedFeature.getProperty('SOURCE_ID') + '</td></tr>' +
-		// 	'</tbody></table>';
-
-		// clickHandler(event);
 	}
 
 	viewer.screenSpaceEventHandler.setInputAction(onLeftClick, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
+
+function initNycInteraction(viewer) {
+	// Information about the currently selected feature
+	var selected = {
+		feature: undefined,
+		originalColor: new Cesium.Color()
+	};
+
+// Information about the currently highlighted feature
+	var highlighted = {
+		feature: undefined,
+		originalColor: new Cesium.Color()
+	};
+
+// An entity object which will hold info about the currently selected feature for infobox display
+	var selectedEntity = new Cesium.Entity();
+
+// Color a feature yellow on hover.
+	viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
+		// If a feature was previously highlighted, undo the highlight
+		if (Cesium.defined(highlighted.feature)) {
+			highlighted.feature.color = highlighted.originalColor;
+			highlighted.feature = undefined;
+		}
+
+		// Pick a new feature
+		var pickedFeature = viewer.scene.pick(movement.endPosition);
+		if (!Cesium.defined(pickedFeature)) {
+			// nameOverlay.style.display = 'none';
+			return;
+		}
+
+		// A feature was picked, so show it's overlay content
+		// nameOverlay.style.display = 'block';
+		// nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
+		// nameOverlay.style.left = movement.endPosition.x + 'px';
+		// var name = pickedFeature.getProperty('name');
+		// if (!Cesium.defined(name)) {
+		// 	name = pickedFeature.getProperty('id');
+		// }
+		// nameOverlay.textContent = name;
+
+		// Highlight the feature if it's not already selected.
+		if (pickedFeature !== selected.feature) {
+			highlighted.feature = pickedFeature;
+			Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
+			pickedFeature.color = Cesium.Color.PINK;
+		}
+	}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+// Color a feature on selection and show metadata in the InfoBox.
+// 	var clickHandler = viewer.screenSpaceEventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+	viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {
+		// If a feature was previously selected, undo the highlight
+		if (Cesium.defined(selected.feature)) {
+			selected.feature.color = selected.originalColor;
+			selected.feature = undefined;
+		}
+
+		// Pick a new feature
+		var pickedFeature = viewer.scene.pick(movement.position);
+		if (!Cesium.defined(pickedFeature)) {
+			// clickHandler(movement);
+			// return;
+		}
+
+		selectFeature(pickedFeature);
+
+		// Select the feature if it's not already selected
+		if (selected.feature === pickedFeature) {
+			return;
+		}
+		selected.feature = pickedFeature;
+
+		// Save the selected feature's original color
+		if (pickedFeature === highlighted.feature) {
+			Cesium.Color.clone(highlighted.originalColor, selected.originalColor);
+			highlighted.feature = undefined;
+		} else {
+			Cesium.Color.clone(pickedFeature.color, selected.originalColor);
+		}
+
+		// Highlight newly selected feature
+		pickedFeature.color = Cesium.Color.LIME;
+	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+}
+
+function selectFeature(item) {
+	if (!item) {
+		selectedFeatureSignal.trigger(null);
+		return;
+	}
+
+	const feature = item.content.getFeature(0)
+	const attributeNames = feature.getPropertyNames();
+	const attributes = attributeNames.reduce((acc, x) => Object.assign(acc, {
+		[x]: feature.getProperty(x),
+	}), {});
+
+	// console.log('Pick', pickedFeature);
+	// console.log('Pick', pickedFeature.content.getFeature(0));
+	// console.log('Pick', pickedFeature.content.getFeature(0).getPropertyNames());
+	// console.log('Pick', attributes);
+
+	selectedFeatureSignal.trigger(attributes);
+}
 
 function main() {
 	Cesium.BingMapsApi.defaultKey = 'AihaXS6TtE_olKOVdtkMenAMq1L5nDlnU69mRtNisz1vZavr1HhdqGRNkB2Bcqvs'; // For use with this application only
@@ -760,19 +855,20 @@ function main() {
 	// loadingIndicator.style.display = 'none';
 	// });
 
-	// load3dTiles(viewer, './Data/20171116-Sample');
+	load3dTiles(viewer, './Data/20171116-Sample');
 	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
 	// load3dTiles(viewer, './Data/20171115-Define2-Tileset');
 	// load3dTiles(viewer, './Data/20171115-Neutral2-Tileset');
 
 	// loadGeojsonAreas(viewer, './Data/Models/saratov-areas-sample.geojson');
 
-	loadGeojson(viewer, './Data/Models/green-1.geojson');
+	// loadGeojson(viewer, './Data/Models/green-1.geojson');
 	// loadGeojson(viewer, './Data/Models/green-2.geojson');
 	// loadGeojson(viewer, './Data/Models/roads.geojson');
 
 	// loadGeojsonAreas(viewer);
-	initTileClick(viewer);
+	initNycInteraction(viewer);
+	// initTileClick(viewer);
 }
 
 main();
