@@ -70,7 +70,87 @@ button.cesium-infoBox-camera {
 #ui {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
 
+    /*background: white;*/
+
+    max-width: 40%;
+    margin-right: 10px;
+    margin-top: 45px;
+}
+
+.Block-Background {
+    background: rgba(0, 0, 0, 0.25);
+    /*filter: blur(5px);*/
+
+    padding: 10px;
+}
+
+.AttributesTable > ul {
+    padding: 0;
+}
+
+.AttributesTable ul {
+    list-style: none;
+    margin: 0;
+}
+
+.AttributesTableItem {
+    /*background: white;*/
+    /*color: black;*/
+    /*padding: 8px 16px;*/
+    margin-bottom: 12px;
+    font-size: 14px;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+.AttributesTableItem--folded {
+    border: 3px solid white;
+    color: white;
+}
+
+.AttributesTableItem--unfolded {
     background: white;
+    color: black;
+}
+
+.AttributesTableItem-Name {
+    margin: 8px 16px;
+    display: inline-block;
+    /*font-weight: 700;*/
+}
+
+.AttributesTableItem--unfolded .AttributesTableItem-Name {
+    margin: 11px 16px;
+    /*display: inline-block;*/
+    font-weight: 700;
+}
+
+/*.AttributesTableItem:hover {*/
+/*color: red;*/
+/*}*/
+
+.AttributesBlock {
+    padding: 0 0 16px;
+}
+
+.AttributeRow {
+    margin: 0 16px 4px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid black;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.AttributeRow-Name {
+    text-align: left;
+}
+
+.AttributeRow-Value {
+    text-align: right;
+    flex: 1;
 }

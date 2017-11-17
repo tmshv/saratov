@@ -14,7 +14,17 @@ export default class App extends Component {
 		const {attributes} = this.props;
 
 		return attributes
-			? <AttributesTable attributes={attributes}/>
+			? (
+				<Block>
+					<AttributesTable attributes={attributes}/>
+				</Block>
+			)
 			: null;
 	}
 };
+
+const Block = ({children}) => (
+	<div className='Block-Background'>
+		{children}
+	</div>
+);

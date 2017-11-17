@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import classNames from 'classnames';
 import {groups, attributeTranslation} from './attributes';
 
 function t(key) {
@@ -18,18 +19,20 @@ export default class AttributesTable extends Component {
 	render() {
 		const {attributes} = this.props;
 		return (
-			<ul>
-				{
-					groups.map((x, i) => (
-						<AttributesGroup
-							key={i}
-							attributes={selectAttributes(x.attributes, attributes)}
-						>
-							{x.name}
-						</AttributesGroup>
-					))
-				}
-			</ul>
+			<div className='AttributesTable'>
+				<ul>
+					{
+						groups.map((x, i) => (
+							<AttributesGroup
+								key={i}
+								attributes={selectAttributes(x.attributes, attributes)}
+							>
+								{x.name}
+							</AttributesGroup>
+						))
+					}
+				</ul>
+			</div>
 		)
 	}
 }
@@ -57,8 +60,14 @@ class AttributesGroup extends Component {
 		const {folded} = this.state;
 
 		return (
-			<li onClick={this.onClick}>
-				<span>{children}</span>
+			<li className={classNames('AttributesTableItem', {
+				'AttributesTableItem--folded': folded,
+				'AttributesTableItem--unfolded': !folded,
+			})}
+				onClick={this.onClick}
+			>
+				<span className='AttributesTableItem-Name'
+				>{children}</span>
 				{folded ? null : (
 					<AT attributes={attributes}/>
 				)}
@@ -69,18 +78,26 @@ class AttributesGroup extends Component {
 
 const AT = ({attributes}) => {
 	return (
-		<ul>
+		<ul className='AttributesBlock'>
 			{
 				Object
 					.entries(attributes)
-					.map(([key, value]) => [t(key), value])
-					.map(([key, value], i) => (
-						<li key={i}>
-							<span>{key}</span>
-							<span>{value}</span>
-						</li>
+					.map(([name, value]) => [t(name), value])
+					.map(([name, value], i) => (
+						<AttributeRow key={i} name={name}>
+							{value}
+						</AttributeRow>
 					))
 			}
 		</ul>
+	);
+};
+
+const AttributeRow = ({name, children: value}) => {
+	return (
+		<li className='AttributeRow'>
+			<span className='AttributeRow-Name'>{name}</span>
+			<span className='AttributeRow-Value'>{value}</span>
+		</li>
 	);
 };
