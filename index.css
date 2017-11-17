@@ -68,7 +68,22 @@ button.cesium-infoBox-camera {
 }
 
 #ui {
-    position: absolute;
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+
+    /*width: 100%;*/
+    /*height: 100%;*/
+
+    /*pointer-events: none;*/
+}
+
+.FlowBlock {
+    /*pointer-events: auto;*/
+}
+
+.FlowBlock-Attributes {
+    position: fixed;
     top: 0;
     right: 0;
 
@@ -77,6 +92,18 @@ button.cesium-infoBox-camera {
     max-width: 40%;
     margin-right: 10px;
     margin-top: 45px;
+}
+
+.FlowBlock-Legend {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    /*background: white;*/
+
+    /*max-width: 50%;*/
+    /*margin-right: 10px;*/
+    margin-bottom: 35px;
 }
 
 .Block-Background {
@@ -90,7 +117,7 @@ button.cesium-infoBox-camera {
     padding: 0;
 }
 
-.AttributesTable ul {
+ul {
     list-style: none;
     margin: 0;
 }
@@ -153,4 +180,23 @@ button.cesium-infoBox-camera {
 .AttributeRow-Value {
     text-align: right;
     flex: 1;
+}
+
+.Legend ul{
+    display: flex;
+    flex-direction: row;
+}
+
+.LegendItem {
+    /*display: flex;*/
+    /*flex-direction: row;*/
+
+    font-size: 12px;
+    color: white;
+    margin-right: 16px;
+}
+
+.ColorBlock {
+    display: inline-block;
+    margin-right: 4px;
 }
