@@ -1,3 +1,5 @@
+import Cesium from 'cesium/Cesium';
+
 export function loadBingImagery(viewer) {
 	viewer.imageryLayers.addImageryProvider(new Cesium.BingMapsImageryProvider({
 		url: 'https://dev.virtualearth.net',

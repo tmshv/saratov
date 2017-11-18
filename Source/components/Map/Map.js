@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Cesium from 'cesium/Cesium';
 
 export default class Map extends Component {
 	componentDidMount() {

@@ -1,3 +1,5 @@
+import Cesium from 'cesium/Cesium';
+
 import {load3dTiles} from './map/load3dTiles';
 import {loadGeojson} from './map/loadGeojson';
 import {loadBingImagery} from './map/loadImagery';

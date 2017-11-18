@@ -1,3 +1,5 @@
+import Cesium from 'cesium/Cesium';
+
 export function loadGeojson(viewer, url) {
 	var geojsonOptions = {
 		clampToGround: true,

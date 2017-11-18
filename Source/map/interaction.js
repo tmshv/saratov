@@ -1,3 +1,4 @@
+import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal} from '../signals';
 
 export function initInteraction(viewer) {

@@ -1,3 +1,5 @@
+import Cesium from 'cesium/Cesium';
+
 function color(hex, alpha) {
 	return `color('${hex}', ${alpha})`;
 }

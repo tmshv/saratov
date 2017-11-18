@@ -1,53 +1,86 @@
 const path = require('path');
-const fs = require('fs');
+
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// target = process.env.TARGET || 'browser',
+// The path to the cesium source code
+const cesiumSource = 'node_modules/cesium/Source';
+const cesiumWorkers = '../Build/Cesium/Workers';
 
-module.exports = {
+module.exports = [{
+	context: __dirname,
 	entry: {
-		'app': './Source/app.js'
+		app: './Source/app.js'
 	},
-
 	output: {
-		path: path.resolve(__dirname, 'Output'),
 		filename: '[name].js',
+		path: path.resolve(__dirname, 'Output'),
 
-		// library: 'Samsara',
-		// libraryTarget: 'window'
+		// Needed by Cesium for multiline strings
+		sourcePrefix: ''
 	},
-
-	devtool: 'cheap-module-source-map',
-
+	amd: {
+		// Enable webpack-friendly use of require in cesium
+		toUrlUndefined: true
+	},
+	node: {
+		// Resolve node module use of fs
+		fs: "empty"
+	},
 	resolve: {
 		alias: {
-			// backbone: path.resolve('node_modules', 'backbone')
+			// Cesium module name
+			cesium: path.resolve(__dirname, cesiumSource)
 		}
 	},
-
 	module: {
 		rules: [
 			{
 				test: /\.jsx?/,
+				exclude: /(node_modules)/,
 				use: {
 					loader: 'babel-loader'
 				}
 			},
-			// {
-			// 	test: /\.css$/,
-			// 	use: [
-			// 		'style-loader',
-			// 		'css-loader',
-			// 		'postcss-loader',
-			// 	],
-			// },
+			{
+				test: /\.css$/,
+				use: [
+					'style-loader/url',
+					'file-loader',
+				]
+			},
+			{
+				test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
+				use: ['url-loader']
+			}
 		]
 	},
+	plugins: [
+		new HtmlWebpackPlugin({
+			template: 'index.html'
+		}),
 
-	// devServer: {
-	// 	contentBase: path.resolve(__dirname, 'target', 'template'),
-	// 	compress: false,
-	// 	port: 3002,
-	// 	lazy: true,
-	// },
-};
+		// Copy Cesium Assets, Widgets, and Workers to a static directory
+		new CopyWebpackPlugin([{from: path.join(cesiumSource, cesiumWorkers), to: 'Workers'}]),
+		new CopyWebpackPlugin([{from: path.join(cesiumSource, 'Assets'), to: 'Assets'}]),
+		new CopyWebpackPlugin([{from: path.join(cesiumSource, 'Widgets'), to: 'Widgets'}]),
+
+		new webpack.DefinePlugin({
+			// Define relative base path in cesium for loading assets
+			CESIUM_BASE_URL: JSON.stringify('')
+		}),
+
+		// Split cesium into a seperate bundle
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'cesium',
+			minChunks: function (module) {
+				return module.context && module.context.indexOf('cesium') !== -1;
+			}
+		}),
+	],
+	devtool: 'cheap-module-source-map',
+	devServer: {
+		contentBase: path.join(__dirname, "Output")
+	}
+}];
