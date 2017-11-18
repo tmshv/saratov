@@ -534,7 +534,7 @@ function loadGeojson(viewer, url) {
 		// strokeWidth: 2,
 		// stroke: Cesium.Color.WHITE,
 		// stroke: Cesium.Color.WHITE,
-		fill: new Cesium.Color(rgba([157, 176, 146])),
+		// fill: new Cesium.Color(rgba([157, 176, 146])),
 	};
 
 	// Load neighborhood boundaries from a GeoJson file
@@ -866,12 +866,18 @@ function main() {
 	// loadingIndicator.style.display = 'none';
 	// });
 
-	load3dTiles(viewer, './Data/20171116-Sample');
 	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
-	// load3dTiles(viewer, './Data/20171115-Define2-Tileset');
-	// load3dTiles(viewer, './Data/20171115-Neutral2-Tileset');
 
-	// loadGeojsonAreas(viewer, './Data/Models/saratov-areas-sample.geojson');
+	load3dTiles(viewer, './Data/Tileset', true);
+
+	load3dTiles(viewer, './Data/20171117-Define-Sample', true);
+	load3dTiles(viewer, './Data/20171117-Define', true);
+	load3dTiles(viewer, './Data/20171117-DefineRL');
+	load3dTiles(viewer, './Data/20171117-DefineOKN');
+
+	load3dTiles(viewer, './Data/20171117-Neutral', true);
+	load3dTiles(viewer, './Data/20171117-NeutralRL');
+	load3dTiles(viewer, './Data/20171117-NeutralOKN');
 
 	// loadGeojson(viewer, './Data/Models/green-1.geojson');
 	// loadGeojson(viewer, './Data/Models/green-2.geojson');
@@ -880,6 +886,9 @@ function main() {
 	// loadGeojsonAreas(viewer);
 	initNycInteraction(viewer);
 	// initTileClick(viewer);
+
+	// viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
+	// var inspectorViewModel = viewer.cesium3DTilesInspector.viewModel;
 }
 
 main();
