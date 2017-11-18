@@ -83,6 +83,14 @@ export function getDefaultViewerOptions() {
 		// baseLayerPicker: false,
 		animation: false,
 		timeline: false,
+		homeButton: false,
+		infoBox: false,
+		sceneModePicker: false,
+		baseLayerPicker: false,
+		fullscreenButton: false,
+		selectionIndicator: false,
+		navigationHelpButton: false,
+		geocoder: false,
 	}
 }
 
