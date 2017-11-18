@@ -4,8 +4,10 @@ import Cesium from 'cesium/Cesium';
 export default class Map extends Component {
 	componentDidMount() {
 		const {options, init} = this.props;
-		this.cesium = new Cesium.Viewer(this.element, options);
-
+		this.cesium = new Cesium.Viewer(this.element, {
+			...options,
+			creditContainer: this.creditContainer,
+		});
 		init(this.cesium);
 	}
 
@@ -15,7 +17,11 @@ export default class Map extends Component {
 				 ref={x => {
 					 this.element = x;
 				 }}
-			/>
+			>
+				<div ref={x => {
+					this.creditContainer = x;
+				}}/>
+			</div>
 		);
 	}
 };
