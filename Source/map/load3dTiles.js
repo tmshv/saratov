@@ -41,20 +41,9 @@ export function load3dTiles(viewer, url, useStyle = false) {
 		});
 	}
 
-	// {
-	// 	"show" : "${Area} > 0",
-	// 	"color" : {
-	// 	"conditions" : [
-	// 		["${Height} < 60", "color('#13293D')"],
-	// 		["${Height} < 120", "color('#1B98E0')"],
-	// 		["true", "color('#E8F1F2', 0.5)"]
-	// 	]
-	// }
-	// }
-
 	// Adjust the tileset height so it's not floating above terrain
 	// var heightOffset = -32;
-	var heightOffset = 0;
+	const heightOffset = 0;
 	tileset.readyPromise
 		.then(function (tileset) {
 			// Position tileset

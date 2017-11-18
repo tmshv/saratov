@@ -1,9 +1,6 @@
-export function loadTerrain(viewer) {
-	//////////////////////////////////////////////////////////////////////////
-	// Loading Terrain
-	//////////////////////////////////////////////////////////////////////////
 import Cesium from 'cesium/Cesium';
 
+export function loadTerrain(viewer) {
 	// Load STK World Terrain
 	viewer.terrainProvider = new Cesium.CesiumTerrainProvider({
 		url: 'https://assets.agi.com/stk-terrain/world',
