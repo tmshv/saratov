@@ -131,7 +131,7 @@ function configure(viewer) {
 	return homeCameraView;
 }
 
-function load3dTiles(viewer, url) {
+function load3dTiles(viewer, url, useStyle = false) {
 	const tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
 		url,
 		maximumScreenSpaceError: 16, // default value
@@ -143,13 +143,24 @@ function load3dTiles(viewer, url) {
 		// debugWireframe: true,
 	}));
 
-	const defaultStyle = new Cesium.Cesium3DTileStyle({
-		// color: "color('#09F1F2', 1)",
-		color: "color('#0000ff', 1)",
-		show: true,
-	});
+	if (useStyle) {
+		tileset.style = new Cesium.Cesium3DTileStyle({
+			color: {
+				conditions: [
+					["${layer_name} === 'history_type0'", "color('#d12121', 1)"],
+					["${layer_name} === 'history_type2'", "color('#ff6619', 1)"],
+					["${layer_name} === 'history_type3'", "color('#ff73b3', 1)"],
+					["${layer_name} === 'history_type4'", "color('#ffc9e6', 1)"],
+					["${layer_name} === 'transformed_type2'", "color('#004dff', 1)"],
+					["${layer_name} === 'transformed_type3'", "color('#75bfff', 1)"],
+					["${layer_name} === 'transformed_type4'", "color('#bae8ff', 1)"],
 
-	// tileset.style = defaultStyle;
+					["true", "color('#FFFFFF', 1.0)"]
+				]
+			},
+			show: true,
+		});
+	}
 
 	// {
 	// 	"show" : "${Area} > 0",
