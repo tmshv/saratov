@@ -68,14 +68,12 @@ button.cesium-infoBox-camera {
 }
 
 #App {
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*left: 0;*/
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    /*width: 100%;*/
-    /*height: 100%;*/
-
-    /*pointer-events: none;*/
+    width: 100%;
+    height: 100%;
 }
 
 .FlowBlock {
@@ -91,7 +89,7 @@ button.cesium-infoBox-camera {
 
     max-width: 40%;
     margin-right: 10px;
-    margin-top: 45px;
+    margin-top: 10px;
 }
 
 .FlowBlock-Legend {
@@ -103,7 +101,7 @@ button.cesium-infoBox-camera {
 
     /*max-width: 50%;*/
     /*margin-right: 10px;*/
-    margin-bottom: 35px;
+    margin-bottom: 0;
 }
 
 .Block-Background {
