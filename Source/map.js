@@ -1,4 +1,3 @@
-import './ui';
 import {selectedFeatureSignal} from './signals';
 
 /**
@@ -830,25 +829,23 @@ function selectFeature(item) {
 	selectedFeatureSignal.trigger(attributes);
 }
 
-function main() {
-	Cesium.BingMapsApi.defaultKey = 'AihaXS6TtE_olKOVdtkMenAMq1L5nDlnU69mRtNisz1vZavr1HhdqGRNkB2Bcqvs'; // For use with this application only
-
-	//////////////////////////////////////////////////////////////////////////
-	// Creating the Viewer
-	//////////////////////////////////////////////////////////////////////////
-
-	var viewer = new Cesium.Viewer('cesiumContainer', {
+export function getDefaultViewerOptions() {
+	return {
 		scene3DOnly: true,
 		// selectionIndicator: false,
 		// baseLayerPicker: false,
 		animation: false,
 		timeline: false,
-	});
-	// viewer.shadows = true;
+	}
+}
 
+export function initMap(viewer) {
+	Cesium.BingMapsApi.defaultKey = 'AihaXS6TtE_olKOVdtkMenAMq1L5nDlnU69mRtNisz1vZavr1HhdqGRNkB2Bcqvs'; // For use with this application only
+
+	// viewer.shadows = true;
 	viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date(2017, 10, 16, 9, 0));
 	viewer.clock.multiplier = 1;
-	viewer.clock.shouldAnimate = true //if it was paused.
+	viewer.clock.shouldAnimate = true; //if it was paused.
 
 	loadBingImagery(viewer);
 	// loadOsmImagery(viewer);
@@ -866,9 +863,9 @@ function main() {
 	// loadingIndicator.style.display = 'none';
 	// });
 
-	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
+	// load3dTiles(viewer, './Data/Tileset', true);
 
-	load3dTiles(viewer, './Data/Tileset', true);
+	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
 
 	load3dTiles(viewer, './Data/20171117-Define-Sample', true);
 	load3dTiles(viewer, './Data/20171117-Define', true);
@@ -890,5 +887,3 @@ function main() {
 	// viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
 	// var inspectorViewModel = viewer.cesium3DTilesInspector.viewModel;
 }
-
-main();

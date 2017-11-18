@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
+import Map from '../Map';
+import {initMap, getDefaultViewerOptions} from '../../map';
 import AttributesTable from '../AttributesTable';
 import Legend from '../Legend';
 import connect from '../../decorators/connect';
@@ -24,7 +26,12 @@ export default class App extends Component {
 			: null;
 
 		return (
-			<div>
+			<div className='App'>
+				<Map
+					options={getDefaultViewerOptions()}
+					init={initMap}
+				/>
+
 				<Block className='FlowBlock-Legend'>
 					<Legend/>
 				</Block>
