@@ -94,26 +94,32 @@ export function getDefaultViewerOptions() {
 export function initMap(viewer) {
 	configure(viewer);
 	loadBingImagery(viewer);
+	initInteraction(viewer);
 
 	// load3dTiles(viewer, './Data/Tileset', true);
 
 	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
 
-	load3dTiles(viewer, './Data/20171117-Define-Sample', true);
-	load3dTiles(viewer, './Data/20171117-Define', true);
-	load3dTiles(viewer, './Data/20171117-DefineRL');
-	load3dTiles(viewer, './Data/20171117-DefineOKN');
+	const tiles = [
+		['Data/20171117-Define', true],
+		['Data/20171117-DefineRL'],
+		['Data/20171117-DefineOKN'],
+		['Data/20171117-Neutral', true],
+		['Data/20171117-NeutralRL'],
+		['Data/20171117-NeutralOKN'],
+	];
 
-	load3dTiles(viewer, './Data/20171117-Neutral', true);
-	load3dTiles(viewer, './Data/20171117-NeutralRL');
-	load3dTiles(viewer, './Data/20171117-NeutralOKN');
+	return tiles
+		.map(([url, styled]) => [`http://localhost:8000/${url}`, Boolean(styled)])
+		.map(([url, styled]) => load3dTiles(viewer, url, styled));
+
+	// load3dTiles(viewer, './Data/20171117-Define-Sample', true);
 
 	// loadGeojson(viewer, './Data/Models/green-1.geojson');
 	// loadGeojson(viewer, './Data/Models/green-2.geojson');
 	// loadGeojson(viewer, './Data/Models/roads.geojson');
 
 	// loadGeojsonAreas(viewer);
-	initInteraction(viewer);
 
 	// viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
 	// var inspectorViewModel = viewer.cesium3DTilesInspector.viewModel;
