@@ -769,7 +769,7 @@ function initNycInteraction(viewer) {
 		if (pickedFeature !== selected.feature) {
 			highlighted.feature = pickedFeature;
 			Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
-			pickedFeature.color = Cesium.Color.PINK;
+			pickedFeature.color = new Cesium.Color(1, 1, 0, 1); // Yellow
 		}
 	}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
