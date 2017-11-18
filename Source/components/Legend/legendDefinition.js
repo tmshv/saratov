@@ -1,26 +1,26 @@
 export const legend = [
 	{
 		name: 'Историческая среда',
-		color: '#8a263c',
+		color: '#ff6619',
 	},
 	{
 		name: 'Историческая среда',
-		color: '#b2778d',
+		color: '#ff73b3',
 	},
 	{
 		name: 'Историческая среда',
-		color: '#cf8a9d',
+		color: '#ffc9e6',
 	},
 	{
 		name: 'Трансформированная среда',
-		color: '#307eac',
+		color: '#004dff',
 	},
 	{
 		name: 'Трансформированная среда',
-		color: '#6b9dbd',
+		color: '#75bfff',
 	},
 	{
 		name: 'Трансформированная среда',
-		color: '#bedbed',
+		color: '#bae8ff',
 	},
 ];
