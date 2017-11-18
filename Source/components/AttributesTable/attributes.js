@@ -39,6 +39,18 @@ export const attributeTranslation = {
 
 export const groups = [
 	{
+		"name": "ОСНОВНЫЕ ТЭПЫ",
+		"attributes": [
+			"S_lot",
+			"S_b",
+			"S_footprint",
+			"S_mm",
+			"S_green",
+			"status",
+		]
+	},
+
+	{
 		"name": "РАЗМЕР УЧАСТКА / БАЛАНС ТЕРРИТОРИЙ",
 		"attributes": [
 			"width",
@@ -101,12 +113,6 @@ export const groups = [
 		"attributes": [
 			"function",
 			"start_floor_area",
-			"S_lot",
-			"S_b",
-			"S_footprint",
-			"S_mm",
-			"S_green",
-			"status",
 		]
 	}
 ];
