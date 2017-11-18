@@ -806,7 +806,7 @@ function initNycInteraction(viewer) {
 		}
 
 		// Highlight newly selected feature
-		pickedFeature.color = Cesium.Color.LIME;
+		pickedFeature.color = new Cesium.Color(.5, 1, .7, .3); // Green
 	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
