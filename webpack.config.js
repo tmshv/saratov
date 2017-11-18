@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // The path to the cesium source code
 const cesiumSource = 'node_modules/cesium/Source';
@@ -43,23 +44,24 @@ module.exports = [{
 					loader: 'babel-loader'
 				}
 			},
-			{
-				test: /\.css$/,
-				use: [
-					'style-loader/url',
-					'file-loader',
-				]
-			},
-			{
-				test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
-				use: ['url-loader']
-			}
+			// {
+			// 	test: /\.css$/,
+			// 	use: ExtractTextPlugin.extract('style-loader', 'css-loader'),
+			// },
+			// {
+			// 	test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
+			// 	use: ['url-loader']
+			// }
 		]
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: 'index.html'
 		}),
+
+		new CopyWebpackPlugin([
+			{from: 'index.css', to: ''}
+		]),
 
 		// Copy Cesium Assets, Widgets, and Workers to a static directory
 		new CopyWebpackPlugin([{from: path.join(cesiumSource, cesiumWorkers), to: 'Workers'}]),
@@ -78,6 +80,8 @@ module.exports = [{
 				return module.context && module.context.indexOf('cesium') !== -1;
 			}
 		}),
+
+		// new ExtractTextPlugin('style.css'),
 	],
 	devtool: 'cheap-module-source-map',
 	devServer: {
