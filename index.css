@@ -18,8 +18,12 @@ html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: sans-serif;
+    /*font-family: sans-serif;*/
     background: #000;
+
+    font-family: 'Univers LT CYR', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    /*font-style: ;*/
 }
 
 #App {
@@ -105,6 +109,9 @@ ul {
 .AttributesTableItem-Name {
     margin: 8px 16px;
     display: inline-block;
+
+    --padding: 4px;
+    padding-top: var(--padding);
     /*font-weight: 700;*/
 }
 
@@ -123,8 +130,10 @@ ul {
 }
 
 .AttributeRow {
+    --padding: 4px;
     margin: 0 16px 4px;
-    padding-bottom: 4px;
+    padding-top: var(--padding);
+    padding-bottom: var(--padding);
     border-bottom: 2px solid black;
 
     display: flex;
@@ -139,7 +148,9 @@ ul {
 .AttributeRow-Value {
     text-align: right;
     flex: 1;
-    font-weight: 700;
+
+    font-family: 'Univers LT CYR 45', Helvetica, sans-serif;
+    /*font-weight: 700;*/
 }
 
 .Legend ul{
@@ -177,4 +188,18 @@ ul {
     overflow: hidden;
     font-family: sans-serif;
     background: #000;
+}
+
+.Layers {
+    color: white;
+    font-size: 12px;
+}
+
+.Layers ul {
+    padding: 0;
+}
+
+.LayersItem {
+    margin-bottom: 4px;
+}
 }
