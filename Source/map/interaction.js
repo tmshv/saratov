@@ -5,14 +5,20 @@ const hoverColor = new Cesium.Color(1, 1, 0, .5); // Yellow
 const selectColor = new Cesium.Color(1, 1, 1, .5); // White
 
 export function initInteraction(viewer) {
+	viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+	initFeatureSelection(viewer);
+}
+
+function initFeatureSelection(viewer) {
 	// Information about the currently selected feature
-	var selected = {
+	const selected = {
 		feature: undefined,
 		originalColor: new Cesium.Color()
 	};
 
 	// Information about the currently highlighted feature
-	var highlighted = {
+	const highlighted = {
 		feature: undefined,
 		originalColor: new Cesium.Color()
 	};
