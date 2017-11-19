@@ -3,6 +3,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // The path to the cesium source code
@@ -88,6 +90,8 @@ module.exports = [{
 				return module.context && module.context.indexOf('cesium') !== -1;
 			}
 		}),
+
+		new UglifyJsPlugin(),
 
 		// new ExtractTextPlugin('style.css'),
 	],
