@@ -97,7 +97,22 @@ const AttributeRow = ({name, children: value}) => {
 	return (
 		<li className='AttributeRow'>
 			<span className='AttributeRow-Name'>{name}</span>
-			<span className='AttributeRow-Value'>{value}</span>
+			<AttributeValue>{value}</AttributeValue>
 		</li>
+	);
+};
+
+const round = (value, n = 1) => Math.round(value * n) / n;
+const isNumber = value => typeof value === 'number';
+
+const AttributeValue = ({children, n = 1}) => {
+	return (
+		<span className='AttributeRow-Value'>
+			{
+				isNumber(children)
+					? round(children, n)
+					: children
+			}
+		</span>
 	);
 };
