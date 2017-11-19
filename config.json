@@ -8,11 +8,6 @@
       "contentType": "3d-tiles"
     },
     {
-      "url": "Data/20171117-DefineRL",
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
       "url": "Data/20171117-DefineOKN",
       "type": "convert",
       "contentType": "3d-tiles"
@@ -20,11 +15,6 @@
     {
       "url": "Data/20171117-Neutral",
       "styled": true,
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171117-NeutralRL",
       "type": "convert",
       "contentType": "3d-tiles"
     },
