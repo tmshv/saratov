@@ -57,5 +57,6 @@ export function load3dTiles(viewer, url, useStyle = false) {
 			// pickedFeature.color = Cesium.Color.YELLOW;
 		});
 
-	return viewer;
+	tileset.show = false;
+	return tileset;
 }

@@ -4,6 +4,7 @@ import Map from '../Map';
 import {initMap, getDefaultViewerOptions} from '../../map';
 import AttributesTable from '../AttributesTable';
 import Legend from '../Legend';
+import Layers from '../Layers';
 import connect from '../../decorators/connect';
 import {selectedFeatureSignal} from '../../signals';
 
@@ -34,6 +35,10 @@ export default class App extends Component {
 
 				<Block className='FlowBlock-Legend'>
 					<Legend/>
+				</Block>
+
+				<Block className='FlowBlock-Layers'>
+					<Layers/>
 				</Block>
 
 				{attributesBlock}

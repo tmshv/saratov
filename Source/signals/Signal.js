@@ -18,5 +18,6 @@ export default class Signal {
 		this.listeners.forEach(x => {
 			x(...args);
 		});
+		return this;
 	}
 }

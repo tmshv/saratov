@@ -4,6 +4,9 @@ import {load3dTiles} from './map/load3dTiles';
 import {loadGeojson} from './map/loadGeojson';
 import {loadBingImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
+import {selectedLayersSignal} from './signals';
+
+const layers = [];
 
 function setupTime(viewer) {
 	viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date(2017, 10, 16, 9, 0));
@@ -105,28 +108,83 @@ function loadConfig(url) {
 		.catch(e => getDefaultConfig());
 }
 
+function toggleLayer(type, value) {
+	layers
+		.filter(layer => layer.type === type)
+		.map(layer => layer.data)
+		.forEach(data => {
+			data.show = value;
+		});
+}
+
+function onSelectedLayersUpdate(layers) {
+	layers.forEach(layer => {
+		toggleLayer(layer.type, layer.checked);
+	})
+}
+
+const LAYER_BUILDINGS = 'buildings';
+const LAYER_CONVERT = 'convert';
+const LAYER_GREEN = 'green';
+
+const CONTENT_TYPE_3D_TILES = '3d-tiles';
+const CONTENT_TYPE_GEOJSON = 'geojson';
+
+function loadData(viewer, options) {
+	const {url, styled, type, contentType} = options;
+	let promise;
+	switch (contentType) {
+		case CONTENT_TYPE_3D_TILES: {
+			promise = Promise.resolve(
+				load3dTiles(viewer, url, styled)
+			);
+			break;
+		}
+
+		case CONTENT_TYPE_GEOJSON: {
+			promise = loadGeojson(viewer, url);
+			break;
+		}
+	}
+
+	return promise
+		.then(data => ({
+			data,
+			type,
+		}));
+}
+
 export function initMap(viewer) {
 	configure(viewer);
 	loadBingImagery(viewer);
 	initInteraction(viewer);
 
-	// load3dTiles(viewer, './Data/Tileset', true);
-	// load3dTiles(viewer, './Data/20171116-Susch-Tileset');
+	selectedLayersSignal.on(onSelectedLayersUpdate);
 
 	return loadConfig('/config.json')
 		.then(config => {
 			const base = config.base || '';
-			const tiles = config.tiles || [];
-			return tiles
-				.map(([url, styled]) => [base + url, Boolean(styled)])
-				.map(([url, styled]) => load3dTiles(viewer, url, styled));
-		});
-
-	// loadGeojson(viewer, './Data/Models/green-1.geojson');
-	// loadGeojson(viewer, './Data/Models/green-2.geojson');
-	// loadGeojson(viewer, './Data/Models/roads.geojson');
-
-	// loadGeojsonAreas(viewer);
+			const dataSource = config.dataSource || [];
+			return Promise.all(dataSource
+				.map(({url, ...x}) => ({
+					...x,
+					url: base + url,
+				}))
+				.map(options => loadData(viewer, options))
+			);
+		})
+		.then(items => {
+			items.forEach(x => {
+				layers.push(x);
+			});
+		})
+		.then(() => {
+			selectedLayersSignal.trigger([
+				{name: 'Застройка', type: LAYER_BUILDINGS, checked: true},
+				{name: 'Конверты', type: LAYER_CONVERT, checked: false},
+				{name: 'Озеленение', type: LAYER_GREEN, checked: false},
+			]);
+		})
 
 	// viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
 	// var inspectorViewModel = viewer.cesium3DTilesInspector.viewModel;
