@@ -20,10 +20,36 @@ function selectAttributes(names, attributes) {
 }
 
 export default class AttributesTable extends Component {
+	constructor(props) {
+		super(props);
+
+		this.unfoldGroup = this.unfoldGroup.bind(this);
+
+		this.state = {
+			folded: groups.map((x, i) => i !== 0), // Only first group is unfolded by default
+		};
+	}
+
+	unfoldGroup(index) {
+		const {folded} = this.state;
+		this.setState({
+			folded: folded.map((x, i) => i !== index), // Only indexed group is unfolded
+		})
+	}
+
+	isFolded(index) {
+		const {folded} = this.state;
+		return folded[index];
+	}
+
 	render() {
 		const {attributes} = this.props;
 		const items = groups.map((x, i) => (
 			<AttributesGroup
+				folded={this.isFolded(i)}
+				onClick={() => {
+					this.unfoldGroup(i);
+				}}
 				key={i}
 				attributes={selectAttributes(x.attributes, attributes)}
 			>
@@ -42,33 +68,16 @@ export default class AttributesTable extends Component {
 }
 
 class AttributesGroup extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			folded: true,
-		};
-
-		this.onClick = this.onClick.bind(this);
-	}
-
-	onClick(e) {
-		const {folded} = this.state;
-		this.setState({
-			folded: !folded,
-		})
-	}
-
 	render() {
-		const {children, attributes} = this.props;
-		const {folded} = this.state;
+		const {children, folded, attributes} = this.props;
+		const {onClick} = this.props;
 
 		return (
 			<li className={classNames('AttributesTableItem', {
 				'AttributesTableItem--folded': folded,
 				'AttributesTableItem--unfolded': !folded,
 			})}
-				onClick={this.onClick}
+				onClick={onClick}
 			>
 				<span className='AttributesTableItem-Name'
 				>{children}</span>
