@@ -23,4 +23,8 @@ export const legend = [
 		name: 'Трансформированная среда',
 		color: '#bae8ff',
 	},
+	{
+		name: 'ОКН',
+		color: '#ffffff',
+	},
 ];
