@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
-import {legend} from './legendDefinition';
+import {layers} from '../../models/layers';
+
+const legend = layers.map(x => ({
+	name: x.name,
+	color: x.color,
+}));
 
 export default class Legend extends Component {
 	render() {

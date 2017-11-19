@@ -1,4 +1,22 @@
 import Cesium from 'cesium/Cesium';
+import {layers} from '../models/layers';
+
+function createLayersStyle() {
+	const layerName = attrEqual.bind(null, 'layer_name');
+
+	return new Cesium.Cesium3DTileStyle({
+		color: {
+			conditions: [
+				...layers.map(x => [
+					layerName(x.layerName), color(x.color, 1)
+				]),
+
+				['true', color('#FFFFFF', 1.0)]
+			]
+		},
+		show: true,
+	});
+}
 
 function color(hex, alpha) {
 	return `color('${hex}', ${alpha})`;
@@ -20,26 +38,7 @@ export function load3dTiles(viewer, url, useStyle = false) {
 		// debugWireframe: true,
 	}));
 
-	if (useStyle) {
-		const layerName = attrEqual.bind(null, 'layer_name');
-
-		tileset.style = new Cesium.Cesium3DTileStyle({
-			color: {
-				conditions: [
-					[layerName('history_type0'), color('#d12121', 1)],
-					[layerName('history_type2'), color('#ff6619', 1)],
-					[layerName('history_type3'), color('#ff73b3', 1)],
-					[layerName('history_type4'), color('#ffc9e6', 1)],
-					[layerName('transformed_type2'), color('#004dff', 1)],
-					[layerName('transformed_type3'), color('#75bfff', 1)],
-					[layerName('transformed_type4'), color('#bae8ff', 1)],
-
-					['true', color('#FFFFFF', 1.0)]
-				]
-			},
-			show: true,
-		});
-	}
+	if (useStyle) tileset.style = createLayersStyle();
 
 	// Adjust the tileset height so it's not floating above terrain
 	// var heightOffset = -32;
