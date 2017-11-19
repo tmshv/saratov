@@ -1,27 +1,27 @@
 export const legend = [
 	{
 		name: 'Зона И1',
-		color: '#ff6619',
+		color: '#ff1966',
 	},
 	{
 		name: 'Зона И2',
-		color: '#ff73b3',
+		color: '#f58e92',
 	},
 	{
 		name: 'Зона И3',
-		color: '#ffc9e6',
+		color: '#fbd2d1',
 	},
 	{
 		name: 'Зона ИТ1',
-		color: '#004dff',
+		color: '#005baa',
 	},
 	{
 		name: 'Зона ИТ2',
-		color: '#75bfff',
+		color: '#73a5d8',
 	},
 	{
 		name: 'Зона ИТ3',
-		color: '#bae8ff',
+		color: '#b5d2ee',
 	},
 	{
 		name: 'ОКН',
