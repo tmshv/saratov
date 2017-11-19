@@ -1,6 +1,9 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal} from '../signals';
 
+const hoverColor = new Cesium.Color(1, 1, 0, .5); // Yellow
+const selectColor = new Cesium.Color(1, 1, 1, .5); // White
+
 export function initInteraction(viewer) {
 	// Information about the currently selected feature
 	var selected = {
@@ -32,21 +35,11 @@ export function initInteraction(viewer) {
 			return;
 		}
 
-		// A feature was picked, so show it's overlay content
-		// nameOverlay.style.display = 'block';
-		// nameOverlay.style.bottom = viewer.canvas.clientHeight - movement.endPosition.y + 'px';
-		// nameOverlay.style.left = movement.endPosition.x + 'px';
-		// var name = pickedFeature.getProperty('name');
-		// if (!Cesium.defined(name)) {
-		// 	name = pickedFeature.getProperty('id');
-		// }
-		// nameOverlay.textContent = name;
-
 		// Highlight the feature if it's not already selected.
 		if (pickedFeature !== selected.feature) {
 			highlighted.feature = pickedFeature;
 			Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
-			pickedFeature.color = new Cesium.Color(1, 1, 0, 1); // Yellow
+			pickedFeature.color = hoverColor;
 		}
 	}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -66,7 +59,7 @@ export function initInteraction(viewer) {
 			// return;
 		}
 
-		selectFeature(pickedFeature);
+		selectFeature(null);
 
 		// Select the feature if it's not already selected
 		if (selected.feature === pickedFeature) {
@@ -83,7 +76,8 @@ export function initInteraction(viewer) {
 		}
 
 		// Highlight newly selected feature
-		pickedFeature.color = new Cesium.Color(.5, 1, .7, .3); // Green
+		pickedFeature.color = selectColor;
+		selectFeature(pickedFeature);
 	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
@@ -98,11 +92,6 @@ function selectFeature(item) {
 	const attributes = attributeNames.reduce((acc, x) => Object.assign(acc, {
 		[x]: feature.getProperty(x),
 	}), {});
-
-	// console.log('Pick', pickedFeature);
-	// console.log('Pick', pickedFeature.content.getFeature(0));
-	// console.log('Pick', pickedFeature.content.getFeature(0).getPropertyNames());
-	// console.log('Pick', attributes);
 
 	selectedFeatureSignal.trigger(attributes);
 }

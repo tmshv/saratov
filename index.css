@@ -202,4 +202,11 @@ ul {
 .LayersItem {
     margin-bottom: 4px;
 }
+
+.LayersItem label{
+    cursor: pointer;
+}
+
+.LayersItem input {
+    cursor: pointer;
 }

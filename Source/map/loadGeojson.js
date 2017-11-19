@@ -1,37 +1,46 @@
 import Cesium from 'cesium/Cesium';
 
-export function loadGeojson(viewer, url) {
-	var geojsonOptions = {
+function createColor(hex, alpha) {
+	console.log('CC', hex, alpha);
+	const color = Cesium.Color.fromCssColorString(hex);
+	color.alpha = alpha;
+	return color;
+}
+
+export function parseGeojsonOptions({
+										fill = '#ffffff',
+										fillOpacity = 1,
+										stroke = '#ffffff',
+										strokeOpacity = 1,
+										...options
+									}) {
+	return {
+		...options,
+		fill: createColor(fill, fillOpacity),
+		stroke: createColor(stroke, strokeOpacity),
+		// stroke: options.stroke === null
+		// 	? null
+		// 	: Cesium.Color.fromCssColorString(stroke),
+	}
+}
+
+export function loadGeojson(viewer, url, options) {
+	const geojsonOptions = {
 		clampToGround: false,
-		// clampToGround: true,
-		// strokeWidth: 2,
-		// stroke: Cesium.Color.WHITE,
-		// stroke: Cesium.Color.WHITE,
-		// fill: new Cesium.Color(rgba([157, 176, 146])),
+		// fill: Cesium.Color.WHITE,
+		// stroke: new Cesium.Color(1, 0, 1, 1),
+		// fill: Cesium.Color.fromCssColorString('#00b26b'),
+		// stroke: Cesium.Color.PINK,
+		...options,
 	};
 
 	// Load neighborhood boundaries from a GeoJson file
 	return Cesium.GeoJsonDataSource
 		.load(url, geojsonOptions)
-		.then(function (dataSource) {
+		.then(dataSource => {
 			viewer.dataSources.add(dataSource);
 
 			dataSource.show = false;
 			return dataSource;
-
-			// // Get the array of entities
-			// return dataSource.entities.values
-			// 	.map(entity => {
-			// 		if (Cesium.defined(entity.polygon)) {
-			//
-			// 			// Set the polygon material to a random, translucent color
-			// 			// entity.polygon.material = new Cesium.Color(rgba([157, 176, 146]));
-			// 			// entity.polygon.outline = false;
-			// 			// entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-			// 			// entity.polygon.outlineWidth = 1;
-			//
-			// 			// entity.stroke = Cesium.Color.HOTPINK;
-			// 		}
-			// 	})
 		});
 }

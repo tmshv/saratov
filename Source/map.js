@@ -1,9 +1,10 @@
 import Cesium from 'cesium/Cesium';
 
 import {load3dTiles} from './map/load3dTiles';
-import {loadGeojson} from './map/loadGeojson';
+import {loadGeojson, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
+import {setupCamera} from './map/camera';
 import {selectedLayersSignal} from './signals';
 
 const layers = [];
@@ -24,45 +25,6 @@ function setupTime(viewer) {
 	// viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
 }
 
-function setupCamera(viewer) {
-	// Create an initial camera view
-	// var initialPosition = new Cesium.Cartesian3.fromDegrees(
-	//     -73.998114468289017509,
-	//     40.674512895646692812,
-	//     2631.082799425431
-	// );
-	// var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306);
-
-	const initialPosition = new Cesium.Cartesian3.fromDegrees(
-		46.0319684578321,
-		51.532937475728112,
-		1000,
-	);
-
-	const initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(
-		7.1077496389876024807,
-		-90,//-31.987223091598949054,
-		0.025883251314954971306
-	);
-
-	const homeCameraView = {
-		destination: initialPosition,
-		orientation: {
-			heading: initialOrientation.heading,
-			pitch: initialOrientation.pitch,
-			roll: initialOrientation.roll
-		}
-	};
-	// Set the initial view
-	viewer.scene.camera.setView(homeCameraView);
-
-	// Add some camera flight animation options
-	homeCameraView.duration = 2.0;
-	homeCameraView.maximumHeight = 2000;
-	homeCameraView.pitchAdjustHeight = 2000;
-	homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
-}
-
 function configure(viewer) {
 	setupTime(viewer);
 	setupCamera(viewer);
@@ -73,7 +35,7 @@ function configure(viewer) {
 	// Enable lighting based on sun/moon positions
 	viewer.scene.globe.enableLighting = true;
 
-	viewer.resolutionScale = window.devicePixelRatio;
+	viewer.resolutionScale = 1;//window.devicePixelRatio;
 }
 
 export function getDefaultViewerOptions() {
@@ -101,8 +63,12 @@ export function getDefaultConfig() {
 	}
 }
 
-
 function loadConfig(url) {
+	// return Promise.resolve([{
+	// 	"url": "Data/Models/green-1.geojson",
+	// 	"type": "green",
+	// 	"contentType": "geojson"
+	// }]);
 	return fetch(url)
 		.then(x => x.json())
 		.catch(e => getDefaultConfig());
@@ -130,8 +96,8 @@ const LAYER_GREEN = 'green';
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
 
-function loadData(viewer, options) {
-	const {url, styled, type, contentType} = options;
+function loadData(viewer, params) {
+	const {url, styled, type, contentType} = params;
 	let promise;
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {
@@ -142,7 +108,10 @@ function loadData(viewer, options) {
 		}
 
 		case CONTENT_TYPE_GEOJSON: {
-			promise = loadGeojson(viewer, url);
+			const options = params.options
+				? parseGeojsonOptions(params.options)
+				: {};
+			promise = loadGeojson(viewer, url, options);
 			break;
 		}
 	}
@@ -180,9 +149,9 @@ export function initMap(viewer) {
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Застройка', type: LAYER_BUILDINGS, checked: true},
+				{name: 'Застройка', type: LAYER_BUILDINGS, checked: false},
 				{name: 'Конверты', type: LAYER_CONVERT, checked: false},
-				{name: 'Озеленение', type: LAYER_GREEN, checked: false},
+				{name: 'Озеленение', type: LAYER_GREEN, checked: true},
 			]);
 		})
 

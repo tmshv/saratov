@@ -8,29 +8,33 @@ function t(key) {
 		: key;
 }
 
+const exists = value => value !== null && value !== undefined;
+
 function selectAttributes(names, attributes) {
-	return names.reduce((acc, x) => ({
-		...acc,
-		[x]: attributes[x],
-	}), {});
+	return names.reduce((acc, x) => {
+		if (exists(attributes[x])) {
+			acc[x] = attributes[x];
+		}
+		return acc;
+	}, {});
 }
 
 export default class AttributesTable extends Component {
 	render() {
 		const {attributes} = this.props;
+		const items = groups.map((x, i) => (
+			<AttributesGroup
+				key={i}
+				attributes={selectAttributes(x.attributes, attributes)}
+			>
+				{x.name}
+			</AttributesGroup>
+		));
+
 		return (
 			<div className='AttributesTable'>
 				<ul>
-					{
-						groups.map((x, i) => (
-							<AttributesGroup
-								key={i}
-								attributes={selectAttributes(x.attributes, attributes)}
-							>
-								{x.name}
-							</AttributesGroup>
-						))
-					}
+					{items}
 				</ul>
 			</div>
 		)
