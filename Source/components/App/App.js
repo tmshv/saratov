@@ -33,6 +33,14 @@ export default class App extends Component {
 					init={initMap}
 				/>
 
+				<Block className='FlowBlock-Logo'>
+					<div>
+						<h1>
+							ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА
+						</h1>
+					</div>
+				</Block>
+
 				<Block className='FlowBlock-Legend'>
 					<Legend/>
 				</Block>

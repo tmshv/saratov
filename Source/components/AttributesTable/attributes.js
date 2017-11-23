@@ -39,7 +39,7 @@ export const attributeTranslation = {
 
 export const groups = [
 	{
-		"name": "ОСНОВНЫЕ ТЭПЫ",
+		"name": "ОСНОВНЫЕ ТЭП",
 		"attributes": [
 			"S_lot",
 			"S_b",

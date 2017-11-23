@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {layers} from '../../models/layers';
+import {zones} from '../../models/zones';
 
-const legend = layers.map(x => ({
+const legend = zones.map(x => ({
 	name: x.name,
 	color: x.color,
 }));

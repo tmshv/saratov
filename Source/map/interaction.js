@@ -1,8 +1,9 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal} from '../signals';
+import {isEmptyObject} from "../lib/utils";
 
-const hoverColor = new Cesium.Color(1, 1, 0, .5); // Yellow
-const selectColor = new Cesium.Color(1, 1, 1, .5); // White
+const hoverColor = new Cesium.Color(1, 1, 1, .5); // White
+const selectColor = new Cesium.Color(1, 1, 1, .45); // White
 
 export function initInteraction(viewer) {
 	viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
@@ -34,6 +35,8 @@ function initFeatureSelection(viewer) {
 		const pickedFeature = viewer.scene.pick(movement.endPosition);
 		if (!pickedFeature) return;
 
+		if(!canSelectFeature(pickedFeature)) return;
+
 		// Highlight the feature if it's not already selected.
 		if (pickedFeature !== selected.feature) {
 			highlighted.feature = pickedFeature;
@@ -56,6 +59,9 @@ function initFeatureSelection(viewer) {
 			return;
 		}
 
+		const attributes = selectFeature(pickedFeature);
+		if (!attributes) return;
+
 		// Select the feature if it's not already selected
 		if (selected.feature === pickedFeature) return;
 		selected.feature = pickedFeature;
@@ -70,7 +76,7 @@ function initFeatureSelection(viewer) {
 
 		// Highlight newly selected feature
 		pickedFeature.color = selectColor;
-		selectFeature(pickedFeature);
+		setCamera(viewer, pickedFeature);
 	};
 
 	viewer.screenSpaceEventHandler.setInputAction(onMouseMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -82,7 +88,7 @@ function unselectFeature() {
 }
 
 function selectFeature(item) {
-	if(!item.content) return; // item is not 3d tile
+	if (!item.content) return null; // item is not 3d tile
 
 	const feature = item.content.getFeature(0);
 	const attributeNames = feature.getPropertyNames();
@@ -91,5 +97,39 @@ function selectFeature(item) {
 		[x]: feature.getProperty(x),
 	}), {});
 
+	if (isEmptyObject(attributes)) return null;
+
+	console.log('Select:', attributes);
 	selectedFeatureSignal.trigger(attributes);
+	return attributes;
+}
+
+function getFeature(item) {
+	if (!item.content) return null; // item is not 3d tile
+	return item.content.getFeature(0);
+}
+
+function canSelectFeature(item) {
+	if (!item.content) return false; // item is not 3d tile
+
+	const feature = item.content.getFeature(0);
+	const attributeNames = feature.getPropertyNames();
+	const attributes = attributeNames.reduce((acc, x) => ({
+		...acc,
+		[x]: feature.getProperty(x),
+	}), {});
+
+	return !isEmptyObject(attributes);
+}
+
+function setCamera(viewer, item) {
+	const feature = getFeature(item);
+	console.log(item, feature, feature.primitive.boundingSphere);
+	// Position tileset
+	// const boundingSphere = tileset.boundingSphere;
+	// const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
+	// const surfacePosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
+	// const offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
+	// const translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
+	// tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
 }

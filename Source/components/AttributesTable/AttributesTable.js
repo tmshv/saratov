@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
 import {groups, attributeTranslation} from './attributes';
+import {isEmptyObject} from "../../lib/utils";
 
 function t(key) {
 	return key in attributeTranslation
@@ -44,18 +45,31 @@ export default class AttributesTable extends Component {
 
 	render() {
 		const {attributes} = this.props;
-		const items = groups.map((x, i) => (
-			<AttributesGroup
-				folded={this.isFolded(i)}
-				onClick={() => {
-					this.unfoldGroup(i);
-				}}
-				key={i}
-				attributes={selectAttributes(x.attributes, attributes)}
-			>
-				{x.name}
-			</AttributesGroup>
-		));
+		const displayGroups = groups
+			.map((x, i) => ({
+				name: x.name,
+				attributes: selectAttributes(x.attributes, attributes)
+			}))
+			.filter(x => !isEmptyObject(x.attributes));
+
+		const changedGroupsSize = groups.length !== displayGroups.length;
+
+		const items = displayGroups
+			.map((x, i) => (
+				<AttributesGroup
+					folded={changedGroupsSize
+						? i !== 0
+						: this.isFolded(i)
+					}
+					onClick={() => {
+						this.unfoldGroup(i);
+					}}
+					key={i}
+					attributes={x.attributes}
+				>
+					{x.name}
+				</AttributesGroup>
+			));
 
 		return (
 			<div className='AttributesTable'>

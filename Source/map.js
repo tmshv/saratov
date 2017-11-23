@@ -1,8 +1,8 @@
 import Cesium from 'cesium/Cesium';
 
-import {load3dTiles} from './map/load3dTiles';
+import {load3dTiles, create3dTilesStyle} from './map/load3dTiles';
 import {loadGeojson, parseGeojsonOptions} from './map/loadGeojson';
-import {loadBingImagery} from './map/loadImagery';
+import {loadMapBoxImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {selectedLayersSignal} from './signals';
@@ -10,9 +10,10 @@ import {selectedLayersSignal} from './signals';
 const layers = [];
 
 function setupTime(viewer) {
-	viewer.clock.currentTime = Cesium.JulianDate.fromDate(new Date(2017, 10, 16, 9, 0));
-	viewer.clock.multiplier = 1;
-	viewer.clock.shouldAnimate = true; //if it was paused.
+	viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
+	viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
+	// viewer.clock.multiplier = 1;
+	// viewer.clock.shouldAnimate = true; //if it was paused.
 
 	// Set up clock and timeline.
 	// viewer.clock.shouldAnimate = true; // default
@@ -25,17 +26,15 @@ function setupTime(viewer) {
 	// viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
 }
 
-function configure(viewer) {
-	setupTime(viewer);
-	setupCamera(viewer);
-
+function setupViewer(viewer) {
 	// Cask shadows
 	// viewer.shadows = true;
 
 	// Enable lighting based on sun/moon positions
-	viewer.scene.globe.enableLighting = true;
+	// viewer.scene.globe.enableLighting = true;
 
-	viewer.resolutionScale = 1;//window.devicePixelRatio;
+	// Setup scale for better retina support
+	viewer.resolutionScale = window.devicePixelRatio;
 }
 
 export function getDefaultViewerOptions() {
@@ -101,8 +100,11 @@ function loadData(viewer, params) {
 	let promise;
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {
+			const style = styled
+				? create3dTilesStyle(type)
+				: null;
 			promise = Promise.resolve(
-				load3dTiles(viewer, url, styled)
+				load3dTiles(viewer, url, style)
 			);
 			break;
 		}
@@ -124,8 +126,10 @@ function loadData(viewer, params) {
 }
 
 export function initMap(viewer) {
-	configure(viewer);
-	loadBingImagery(viewer);
+	setupViewer(viewer);
+	setupTime(viewer);
+	setupCamera(viewer);
+	loadImagery(viewer);
 	initInteraction(viewer);
 
 	selectedLayersSignal.on(onSelectedLayersUpdate);
@@ -149,9 +153,9 @@ export function initMap(viewer) {
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Застройка', type: LAYER_BUILDINGS, checked: false},
-				{name: 'Конверты', type: LAYER_CONVERT, checked: false},
-				{name: 'Озеленение', type: LAYER_GREEN, checked: true},
+				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: false},
+				{name: 'Пространственные конверты', type: LAYER_CONVERT, checked: true},
+				{name: 'Участки озеленения', type: LAYER_GREEN, checked: false},
 			]);
 		})
 

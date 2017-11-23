@@ -1,50 +1,27 @@
 {
-  "base": "http://localhost:8000/",
+  "base": "/",
   "dataSource": [
     {
-      "url": "Data/20171117-Define",
+      "url": "Data/20171122-Dataset",
       "styled": true,
       "type": "convert",
       "contentType": "3d-tiles"
     },
     {
-      "url": "Data/20171117-DefineOKN",
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171117-Neutral",
+      "url": "Data/20171122-Green",
       "styled": true,
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171117-NeutralOKN",
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/GREEN.geojson",
       "type": "green",
-      "contentType": "geojson",
-      "options": {
-        "fill": "#00b26b",
-        "fillOpacity": 0.7,
-        "stroke": "#000000",
-        "strokeOpacity": 0
-      }
-    },
-    {
-      "url": "Data/ROADS.geojson",
-      "type": "green",
-      "contentType": "geojson",
-      "options": {
-        "stroke": "#ffffff",
-        "strokeOpacity": 1
-      }
+      "contentType": "3d-tiles"
     },
     {
       "url": "Data/20171116-Susch-Tileset",
+      "styled": false,
+      "type": "buildings",
+      "contentType": "3d-tiles"
+    },
+    {
+      "url": "Data/20171122-Buildings",
+      "styled": false,
       "type": "buildings",
       "contentType": "3d-tiles"
     }

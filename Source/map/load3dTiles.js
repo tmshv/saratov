@@ -1,19 +1,33 @@
 import Cesium from 'cesium/Cesium';
-import {layers} from '../models/layers';
+import {zones} from '../models/zones';
 
-function createLayersStyle() {
-	const layerName = attrEqual.bind(null, 'layer_name');
+export function create3dTilesStyle(type) {
+	if (type === 'green') {
+		return new Cesium.Cesium3DTileStyle({
+			color: color('#00b26b', 0.7),
+			show: true,
+		});
+	}
+
+	const zone = attrEqual.bind(null, 'systemZone');
 
 	return new Cesium.Cesium3DTileStyle({
 		color: {
 			conditions: [
-				...layers.map(x => [
-					layerName(x.layerName), color(x.color, 1)
+				...zones.map(x => [
+					zone(x.zoneName), color(x.color, 1)
 				]),
 
 				['true', color('#FFFFFF', 1.0)]
 			]
 		},
+		show: true,
+	});
+}
+
+function createDefault3dTilesStyle() {
+	return new Cesium.Cesium3DTileStyle({
+		color: color('#ffffff', 1.0),
 		show: true,
 	});
 }
@@ -26,7 +40,7 @@ function attrEqual(attribute, value){
 	return `\${${attribute}} === '${value}'`;
 }
 
-export function load3dTiles(viewer, url, useStyle = false) {
+export function load3dTiles(viewer, url, style) {
 	const tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
 		url,
 		maximumScreenSpaceError: 16, // default value
@@ -38,7 +52,8 @@ export function load3dTiles(viewer, url, useStyle = false) {
 		// debugWireframe: true,
 	}));
 
-	if (useStyle) tileset.style = createLayersStyle();
+	if (style) tileset.style = style;
+	else tileset.style = createDefault3dTilesStyle();
 
 	// Adjust the tileset height so it's not floating above terrain
 	// var heightOffset = -32;
