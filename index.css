@@ -1,55 +1,202 @@
-.backdrop {
-    display: inline-block;
-    background: rgba(42, 42, 42, 0.7);
-    border-radius: 5px;
-    border: 1px solid #444;
-    padding: 5px 10px;
-    color: #fff;
-    line-height: 150%;
-    font-size: small;
+/*.backdrop {*/
+    /*display: inline-block;*/
+    /*background: rgba(42, 42, 42, 0.7);*/
+    /*border-radius: 5px;*/
+    /*border: 1px solid #444;*/
+    /*padding: 5px 10px;*/
+    /*color: #fff;*/
+    /*line-height: 150%;*/
+    /*font-size: small;*/
+/*}*/
+/*.backdrop a:link, .backdrop a:visited, .backdrop a:hover {*/
+    /*color: #fff*/
+/*}*/
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /*font-family: sans-serif;*/
+    background: #000;
+
+    font-family: 'Univers LT CYR', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    /*font-style: ;*/
 }
 
-#heightSliderLabel, #heightValue {
-    vertical-align: top;
-}
-
-.backdrop a:link, .backdrop a:visited, .backdrop a:hover {
-    color: #fff
-}
-
-.loadingIndicator {
-    display: none;
+#App {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -33px;
-    margin-left: -33px;
-    width: 66px;
-    height: 66px;
-    background: url(Source/Images/ajax-loader.gif) center no-repeat;
-}
-
-.cover {
-    display: none;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.75);
     top: 0;
     left: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+.FlowBlock {
+    /*pointer-events: auto;*/
+}
+
+.FlowBlock-Attributes {
+    position: fixed;
+    top: 0;
     right: 0;
+
+    /*background: white;*/
+
+    max-width: 40%;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.FlowBlock-Legend {
+    position: fixed;
     bottom: 0;
+    left: 0;
+
+    /*background: white;*/
+
+    /*max-width: 50%;*/
+    /*margin-right: 10px;*/
+    margin-bottom: 0;
 }
 
-#menu {
-    position: absolute;
-    left: 10px;
-    top: 10px;
+.FlowBlock-Layers {
+    position: fixed;
+    top: 50px;
+    left: 0;
 }
 
-.nowrap {
-    white-space: nowrap;
+.FlowBlock-Logo{
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
-html, body, #cesiumContainer {
+.FlowBlock-Logo h1{
+    color: white;
+    font-size: 14px;
+    margin: 0;
+}
+
+.Block-Background {
+    background: rgba(0, 0, 0, 0.25);
+    /*filter: blur(5px);*/
+
+    padding: 10px;
+}
+
+.AttributesTable > ul {
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.AttributesTableItem {
+    /*background: white;*/
+    /*color: black;*/
+    /*padding: 8px 16px;*/
+    margin-bottom: 8px;
+    font-size: 14px;
+
+    user-select: none;
+    cursor: pointer;
+
+    width: 450px;
+}
+
+.AttributesTableItem--folded {
+    border: 2px solid white;
+    color: white;
+}
+
+.AttributesTableItem--unfolded {
+    background: white;
+    color: black;
+}
+
+.AttributesTableItem-Name {
+    margin: 4px 16px;
+    display: inline-block;
+
+    --padding: 4px;
+    padding-top: var(--padding);
+    /*font-weight: 700;*/
+}
+
+.AttributesTableItem--unfolded .AttributesTableItem-Name {
+    margin: 8px 16px;
+    /*display: inline-block;*/
+    font-weight: 700;
+}
+
+/*.AttributesTableItem:hover {*/
+/*color: red;*/
+/*}*/
+
+.AttributesBlock {
+    padding: 0 0 8px;
+}
+
+.AttributeRow {
+    --padding: 0px;
+    margin: 0 16px 4px;
+    padding-top: var(--padding);
+    padding-bottom: var(--padding);
+    border-bottom: 2px solid black;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.AttributeRow-Name {
+    text-align: left;
+    margin-left: 8px;
+}
+
+.AttributeRow-Value {
+    text-align: right;
+    flex: 1;
+
+    font-family: 'Univers LT CYR 45', Helvetica, sans-serif;
+    /*font-weight: 700;*/
+}
+
+.Legend ul{
+    display: flex;
+    flex-direction: row;
+}
+
+.LegendItem {
+    /*display: flex;*/
+    /*flex-direction: row;*/
+
+    font-size: 12px;
+    color: white;
+    margin-right: 16px;
+}
+
+.ColorBlock {
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.App {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.Map {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -59,10 +206,23 @@ html, body, #cesiumContainer {
     background: #000;
 }
 
-button.cesium-infoBox-camera {
-    display: none;
+.Layers {
+    color: white;
+    font-size: 12px;
 }
 
-#3DTiles {
-    padding-top: 10px;
+.Layers ul {
+    padding: 0;
+}
+
+.LayersItem {
+    margin-bottom: 4px;
+}
+
+.LayersItem label{
+    cursor: pointer;
+}
+
+.LayersItem input {
+    cursor: pointer;
 }
