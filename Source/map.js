@@ -34,7 +34,8 @@ function setupViewer(viewer) {
 	// viewer.scene.globe.enableLighting = true;
 
 	// Setup scale for better retina support
-	viewer.resolutionScale = window.devicePixelRatio;
+	// viewer.resolutionScale = window.devicePixelRatio;
+	viewer.resolutionScale = 1;
 }
 
 export function getDefaultViewerOptions() {

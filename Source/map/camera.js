@@ -1,4 +1,5 @@
 import Cesium from 'cesium/Cesium';
+import {zoomSignal} from '../signals';
 
 class StoredView {
 	constructor() {
@@ -70,6 +71,14 @@ export function setupCamera(viewer) {
 	// 	const v = new StoredView();
 	// 	console.log(v.save(viewer.camera));
 	// };
+
+	zoomSignal.on(value => {
+		if (value > 0) {
+			viewer.camera.zoomIn(value);
+		} else {
+			viewer.camera.zoomOut(Math.abs(value));
+		}
+	});
 }
 
 function setupController(viewer) {

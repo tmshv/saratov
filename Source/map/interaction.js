@@ -1,5 +1,5 @@
 import Cesium from 'cesium/Cesium';
-import {selectedFeatureSignal} from '../signals';
+import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
 import {isEmptyObject} from "../lib/utils";
 
 const hoverColor = new Cesium.Color(1, 1, 1, .5); // White
@@ -9,6 +9,13 @@ export function initInteraction(viewer) {
 	viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 	initFeatureSelection(viewer);
+
+	selectedFeatureSignal.on(attributes => {
+		if (!attributes) return;
+
+		const {systemCentroid: centroid} = attributes;
+		if (centroid) setCamera(viewer, centroid);
+	});
 }
 
 function initFeatureSelection(viewer) {
@@ -33,15 +40,16 @@ function initFeatureSelection(viewer) {
 
 		// Pick a new feature
 		const pickedFeature = viewer.scene.pick(movement.endPosition);
-		if (!pickedFeature) return;
+		if (!pickedFeature) return highlightFeature();
 
-		if(!canSelectFeature(pickedFeature)) return;
+		if (!canSelectFeature(pickedFeature)) return highlightFeature();
 
 		// Highlight the feature if it's not already selected.
 		if (pickedFeature !== selected.feature) {
 			highlighted.feature = pickedFeature;
 			Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
 			pickedFeature.color = hoverColor;
+			highlightFeature(pickedFeature);
 		}
 	};
 
@@ -76,7 +84,6 @@ function initFeatureSelection(viewer) {
 
 		// Highlight newly selected feature
 		pickedFeature.color = selectColor;
-		setCamera(viewer, pickedFeature);
 	};
 
 	viewer.screenSpaceEventHandler.setInputAction(onMouseMove, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -88,6 +95,22 @@ function unselectFeature() {
 }
 
 function selectFeature(item) {
+	const attributes = getAttributes(item);
+	if (!attributes) return null;
+
+	console.log('Select:', attributes);
+
+	selectedFeatureSignal.trigger(attributes);
+	return attributes;
+}
+
+function highlightFeature(item) {
+	const feature = getFeature(item);
+	highlightFeatureSignal.trigger(feature);
+	return feature;
+}
+
+function getAttributes(item) {
 	if (!item.content) return null; // item is not 3d tile
 
 	const feature = item.content.getFeature(0);
@@ -98,14 +121,11 @@ function selectFeature(item) {
 	}), {});
 
 	if (isEmptyObject(attributes)) return null;
-
-	console.log('Select:', attributes);
-	selectedFeatureSignal.trigger(attributes);
 	return attributes;
 }
 
 function getFeature(item) {
-	if (!item.content) return null; // item is not 3d tile
+	if (!item || !item.content) return null; // item is not 3d tile
 	return item.content.getFeature(0);
 }
 
@@ -122,14 +142,16 @@ function canSelectFeature(item) {
 	return !isEmptyObject(attributes);
 }
 
-function setCamera(viewer, item) {
-	const feature = getFeature(item);
-	console.log(item, feature, feature.primitive.boundingSphere);
-	// Position tileset
-	// const boundingSphere = tileset.boundingSphere;
-	// const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
-	// const surfacePosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, 0.0);
-	// const offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
-	// const translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
-	// tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
+function setCamera(viewer, {lon, lat}) {
+	const position = Cesium.Cartesian3.fromDegrees(lon, lat, 1000.0);
+
+	viewer.camera.flyTo({
+		destination: position,
+		duration: 1000 / 1000,
+		// orientation: {
+		// 	heading: 5.8598696803362635,
+		// 	pitch: -0.4101786746245062,
+		// 	roll: 6.281716442987705,
+		// }
+	});
 }

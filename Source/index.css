@@ -206,6 +206,10 @@ ul {
     background: #000;
 }
 
+.Map--interactive {
+    cursor: pointer;
+}
+
 .Layers {
     color: white;
     font-size: 12px;
