@@ -62,14 +62,40 @@ export function getDefaultConfig() {
 	}
 }
 
-function loadConfig(url) {
-	// return Promise.resolve([{
-	// 	"url": "Data/Models/green-1.geojson",
-	// 	"type": "green",
-	// 	"contentType": "geojson"
-	// }]);
+function join(lists) {
+	return lists.reduce((acc, x) => [...acc, ...x], []);
+}
+
+function loadJson(url) {
 	return fetch(url)
 		.then(x => x.json())
+		.catch(e => null);
+}
+
+function loadConfig(url) {
+	const dataSourceType = 'dataSource';
+	return loadJson(url)
+		.then(config => {
+			const dataSource = config.dataSource
+				.filter(x => x.contentType !== dataSourceType);
+
+			const innerConfigUrls = config.dataSource
+				.filter(x => x.contentType === dataSourceType)
+				.map(x => x.url);
+			return Promise.all(innerConfigUrls.map(loadJson))
+				.then(innerConfigs => {
+					const inner = join(innerConfigs
+						.map(x => x.dataSource)
+					);
+					return {
+						...config,
+						dataSource: [
+							...dataSource,
+							...inner,
+						]
+					};
+				})
+		})
 		.catch(e => getDefaultConfig());
 }
 
