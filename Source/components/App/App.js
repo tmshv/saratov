@@ -17,8 +17,8 @@ import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal} from '../..
 )
 @connect(
 	selectedFeatureSignal,
-	data => ({
-		attributes: data,
+	attributes => ({
+		attributes,
 	})
 )
 @connect(

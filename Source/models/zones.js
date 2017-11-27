@@ -34,3 +34,16 @@ export const zones = [
 		color: '#ffffff',
 	},
 ];
+
+export function getZoneColor(name, defaultValue) {
+	const zone = zoneMap.get(name);
+	return zone
+		? zone.color
+		: defaultValue;
+}
+
+const zoneMap = createZoneMap(zones);
+
+function createZoneMap(list) {
+	return list.reduce((map, x) => map.set(x.zoneName, x), new Map());
+}

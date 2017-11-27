@@ -1,6 +1,7 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
 import {isEmptyObject} from "../lib/utils";
+import {getAttributes as getAttrs} from "../map";
 
 const hoverColor = new Cesium.Color(1, 1, 1, .5); // White
 const selectColor = new Cesium.Color(1, 1, 1, .45); // White
@@ -13,8 +14,8 @@ export function initInteraction(viewer) {
 	selectedFeatureSignal.on(attributes => {
 		if (!attributes) return;
 
-		const {systemCentroid: centroid} = attributes;
-		if (centroid) setCamera(viewer, centroid);
+		// const {systemCentroid: centroid} = attributes;
+		// if (centroid) setCamera(viewer, centroid);
 	});
 }
 
@@ -111,8 +112,30 @@ function highlightFeature(item) {
 }
 
 function getAttributes(item) {
-	if (!item.content) return null; // item is not 3d tile
+	if (item.id) {
+		const a = getGeojsonAttributes(item);
+		const attrs = getAttrs();
 
+		return attrs.get(a.name);
+	}
+	// if (item.content) return get3dTilesAttributes(item);
+
+	return null;
+}
+
+function getGeojsonAttributes(item) {
+	const feature = item.id;
+
+	const props = feature.properties;
+	// return props.getValue();
+	const attributeNames = props.propertyNames;
+	return attributeNames.reduce((acc, x) => ({
+		...acc,
+		[x]: props[x].getValue(),
+	}), {});
+}
+
+function get3dTilesAttributes(item) {
 	const feature = item.content.getFeature(0);
 	const attributeNames = feature.getPropertyNames();
 	const attributes = attributeNames.reduce((acc, x) => ({
@@ -130,15 +153,9 @@ function getFeature(item) {
 }
 
 function canSelectFeature(item) {
-	if (!item.content) return false; // item is not 3d tile
+	if (!item.id) return false; // item is not Entity
 
-	const feature = item.content.getFeature(0);
-	const attributeNames = feature.getPropertyNames();
-	const attributes = attributeNames.reduce((acc, x) => ({
-		...acc,
-		[x]: feature.getProperty(x),
-	}), {});
-
+	const attributes = getAttributes(item);
 	return !isEmptyObject(attributes);
 }
 

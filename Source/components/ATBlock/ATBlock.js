@@ -5,21 +5,24 @@ import Canvas from '../Canvas';
 export default class ATBlock extends Component {
 	constructor(props) {
 		super(props);
-		this.onRectChange = this.onRectChange.bind(this);
+		this.onChange = this.onChange.bind(this);
+
 		this.state = {
 			rect: null,
+			folded: [false],
 		}
 	}
 
-	onRectChange(rect) {
+	onChange(folded, rect) {
 		this.setState({
+			folded,
 			rect,
 		})
 	}
 
 	render() {
 		const {attributes} = this.props;
-		const {rect} = this.state;
+		const {rect, folded} = this.state;
 
 		const canvas = !rect ? null : (
 			<FF>
@@ -39,8 +42,9 @@ export default class ATBlock extends Component {
 						zIndex: 1,
 					}}>
 						<AttributesTable
-							onRectChange={this.onRectChange}
+							onChange={this.onChange}
 							attributes={attributes}
+							folded={folded}
 						/>
 					</div>
 				</div>

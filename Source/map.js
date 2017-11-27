@@ -1,13 +1,16 @@
 import Cesium from 'cesium/Cesium';
 
-import {load3dTiles, create3dTilesStyle} from './map/load3dTiles';
-import {loadGeojson, parseGeojsonOptions} from './map/loadGeojson';
+import {load3dTiles, loadConverts} from './map/load3dTiles';
+import {create3dTilesStyle} from './map/tileStyle';
+import {loadGeojson, loadStyledGeojson, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {selectedLayersSignal} from './signals';
 
 const layers = [];
+
+const attributesMap = new Map();
 
 function setupTime(viewer) {
 	viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
@@ -121,17 +124,17 @@ const LAYER_GREEN = 'green';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
+const CONTENT_TYPE_ATTRIBUTES = 'attributes';
 
 function loadData(viewer, params) {
 	const {url, styled, type, contentType} = params;
 	let promise;
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {
-			const style = styled
-				? create3dTilesStyle(type)
-				: null;
 			promise = Promise.resolve(
-				load3dTiles(viewer, url, style)
+				type === 'convert'
+					? loadConverts(viewer, url)
+					: load3dTiles(viewer, url)
 			);
 			break;
 		}
@@ -140,7 +143,14 @@ function loadData(viewer, params) {
 			const options = params.options
 				? parseGeojsonOptions(params.options)
 				: {};
-			promise = loadGeojson(viewer, url, options);
+			promise = styled
+				? loadStyledGeojson(viewer, url, params.alpha)
+				: loadGeojson(viewer, url, options);
+			break;
+		}
+
+		case CONTENT_TYPE_ATTRIBUTES: {
+			promise = loadJson(url);
 			break;
 		}
 	}
@@ -149,7 +159,22 @@ function loadData(viewer, params) {
 		.then(data => ({
 			data,
 			type,
+			contentType,
 		}));
+}
+
+function saveAttributes(items) {
+	items = join(items);
+	items.forEach(x => {
+		const name = x.systemName;
+		attributesMap.set(name, x);
+	});
+
+	window.saratovAttributes = getAttributes();
+}
+
+export function getAttributes() {
+	return attributesMap;
 }
 
 export function initMap(viewer) {
@@ -172,6 +197,12 @@ export function initMap(viewer) {
 				}))
 				.map(options => loadData(viewer, options))
 			);
+		})
+		.then(items => {
+			const attributes = items.filter(x => x.contentType === CONTENT_TYPE_ATTRIBUTES);
+			saveAttributes(attributes.map(x => x.data));
+
+			return items.filter(x => x.contentType !== CONTENT_TYPE_ATTRIBUTES);
 		})
 		.then(items => {
 			items.forEach(x => {
