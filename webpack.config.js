@@ -58,11 +58,11 @@ module.exports = [{
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: 'index.html'
+			template: 'Source/index.html'
 		}),
 
 		new CopyWebpackPlugin([
-			{from: 'index.css', to: ''}
+			{from: 'Source/index.css', to: ''}
 		]),
 
 		new CopyWebpackPlugin([
