@@ -2,28 +2,8 @@
   "base": "/",
   "dataSource": [
     {
-      "url": "Data/20171122-Dataset",
-      "styled": true,
-      "type": "convert",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171122-Green",
-      "styled": true,
-      "type": "green",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171116-Susch-Tileset",
-      "styled": false,
-      "type": "buildings",
-      "contentType": "3d-tiles"
-    },
-    {
-      "url": "Data/20171122-Buildings",
-      "styled": false,
-      "type": "buildings",
-      "contentType": "3d-tiles"
+      "url": "Data/config.json",
+      "contentType": "dataSource"
     }
   ]
 }
