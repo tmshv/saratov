@@ -2,7 +2,7 @@ import Cesium from 'cesium/Cesium';
 
 import {load3dTiles, create3dTilesStyle} from './map/load3dTiles';
 import {loadGeojson, parseGeojsonOptions} from './map/loadGeojson';
-import {loadMapBoxImagery as loadImagery} from './map/loadImagery';
+import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {selectedLayersSignal} from './signals';
