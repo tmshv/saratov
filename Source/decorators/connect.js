@@ -9,11 +9,11 @@ export default (signal, mapSignalToProps=defaultMapSignalToProps) => ComposedCom
 	}
 
 	componentDidMount() {
-		this.signalIndex = signal.on(this.onSignalUpdate);
+		if(signal) signal.on(this.onSignalUpdate);
 	}
 
 	componentWillUnmount() {
-		signal.off(this.signalIndex);
+		if(signal) signal.off(this.onSignalUpdate);
 	}
 
 	onSignalUpdate(data) {
