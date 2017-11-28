@@ -31,7 +31,7 @@ export default class Canvas extends Component {
 	}
 
 	render() {
-		const {width, height} = this.props;
+		const {width, height, style = {}} = this.props;
 
 		return (
 			<canvas
@@ -40,6 +40,7 @@ export default class Canvas extends Component {
 				}}
 				width={width}
 				height={height}
+				style={style}
 			/>
 		);
 	}

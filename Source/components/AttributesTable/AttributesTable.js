@@ -28,14 +28,9 @@ export default class AttributesTable extends Component {
 		this.unfoldGroup = this.unfoldGroup.bind(this);
 	}
 
-	componentDidMount(){
-		this.update(this.props.folded);
-	}
-
 	update(folded) {
 		const {onChange} = this.props;
-		const r = this.element.getBoundingClientRect();
-		onChange(folded, r);
+		onChange(folded);
 	}
 
 	unfoldGroup(index) {
@@ -45,10 +40,6 @@ export default class AttributesTable extends Component {
 		newFolded[index] = false;
 
 		this.update(newFolded);
-
-		setTimeout(() => {
-			this.update(newFolded);
-		}, 0);
 	}
 
 	isFolded(index) {
@@ -89,12 +80,8 @@ export default class AttributesTable extends Component {
 			));
 
 		return (
-			<div className='AttributesTable' ref={x => {
-				this.element = x;
-			}}>
-				<ul style={{
-					padding: '10px',
-				}}>
+			<div className={classNames('AttributesTable', 'Block')}>
+				<ul>
 					{items}
 				</ul>
 			</div>

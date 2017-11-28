@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import classNames from 'classnames';
 import connect from '../../decorators/connect';
 import {zoomSignal} from '../../signals';
 
@@ -17,28 +18,15 @@ const step = 500;
 		};
 	}
 )
-export default class Legend extends Component {
+export default class ZoomControl extends Component {
 	render() {
 		const {onPlus, onMinus} = this.props;
 
 		return (
-			<div>
-				<button onClick={onPlus}>+</button>
-				<button onClick={onMinus}>-</button>
+			<div className={classNames('Block', 'ZoomControl')}>
+				<button className={classNames('ZoomControlButton')} onClick={onPlus}>+</button>
+				<button className={classNames('ZoomControlButton')} onClick={onMinus}>–</button>
 			</div>
 		)
 	}
 }
-
-const LayersItem = ({checked, onChange, children}) => (
-	<li className='LayersItem'>
-		<label>
-			<input
-				type="checkbox"
-				checked={checked}
-				onChange={onChange}
-			/>
-			{children}
-		</label>
-	</li>
-);
