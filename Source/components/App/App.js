@@ -43,29 +43,29 @@ export default class App extends Component {
 					onCanvasRender={onCanvasRender}
 				/>
 
-				{/*<Float top={0} left={0}>*/}
-					{/*<BlurBlock>*/}
-						{/*<div className={classNames('Logo', 'Block')}>*/}
-							{/*<h1>*/}
-								{/*ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА*/}
-							{/*</h1>*/}
-						{/*</div>*/}
-					{/*</BlurBlock>*/}
-				{/*</Float>*/}
+				<Float top={0} left={0}>
+					<BlurBlock>
+						<div className={classNames('Logo', 'Block')}>
+							<h1>
+								ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА
+							</h1>
+						</div>
+					</BlurBlock>
+				</Float>
 
-				{/*<Float top={50} left={10}>*/}
-					{/*<BlurBlock style={{*/}
-						{/*borderRadius: '2px'*/}
-					{/*}}>*/}
-						{/*<ZoomControl/>*/}
-					{/*</BlurBlock>*/}
-				{/*</Float>*/}
+				<Float top={50} left={10}>
+					<BlurBlock style={{
+						borderRadius: '2px'
+					}}>
+						<ZoomControl/>
+					</BlurBlock>
+				</Float>
 
-				{/*<Float bottom={0} left={0}>*/}
-					{/*<BlurBlock>*/}
-						{/*<Legend/>*/}
-					{/*</BlurBlock>*/}
-				{/*</Float>*/}
+				<Float bottom={0} left={0}>
+					<BlurBlock>
+						<Legend/>
+					</BlurBlock>
+				</Float>
 
 				{!attributes ? null : (
 					<Float top={10} right={10}>
