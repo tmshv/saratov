@@ -49,5 +49,10 @@ export function getZoneColor(name, defaultValue) {
 const zoneMap = createZoneMap(zones);
 
 function createZoneMap(list) {
-	return list.reduce((map, x) => map.set(x.zoneName, x), new Map());
+	return list.reduce(
+		(map, x) => x.zoneName
+			? map.set(x.zoneName, x)
+			: map,
+		new Map()
+	);
 }
