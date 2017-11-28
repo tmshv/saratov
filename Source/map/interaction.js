@@ -14,8 +14,8 @@ export function initInteraction(viewer) {
 	selectedFeatureSignal.on(attributes => {
 		if (!attributes) return;
 
-		// const {systemCentroid: centroid} = attributes;
-		// if (centroid) setCamera(viewer, centroid);
+		const {systemCentroid: centroid} = attributes;
+		if (centroid) setCamera(viewer, centroid);
 	});
 }
 
