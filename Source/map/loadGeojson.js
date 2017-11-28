@@ -46,11 +46,13 @@ export function loadGeojson(viewer, url, options) {
 		});
 }
 
-function getColor(type, alpha) {
-	return new Cesium.Color(1, 0, 1, alpha);
+function getColor(hex, alpha) {
+	const color = Cesium.Color.fromCssColorString(hex);
+	color.alpha = alpha;
+	return color;
 }
 
-function getMaterial(entity, alpha) {
+function getEntityMaterial(entity, alpha) {
 	const type = entity.properties.zone.getValue();
 	// const type = entity.getProperty('layer_name');
 
@@ -62,13 +64,10 @@ function getMaterial(entity, alpha) {
 	});
 
 	const hex = getZoneColor(type, '#ff00ff');
-	const color = Cesium.Color.fromCssColorString(hex);
-	color.alpha = alpha;
-
-	return color;
+	return getColor(hex, alpha);
 }
 
-export function loadGeojsonConverts(viewer, url, {alpha}) {
+export function loadGeojsonConverts(viewer, url, {alpha, fill}) {
 	const geojsonOptions = {
 		clampToGround: false,
 		strokeWidth: 1,
@@ -85,7 +84,9 @@ export function loadGeojsonConverts(viewer, url, {alpha}) {
 					? entity.polygon
 					: entity.polyline;
 				if (geom) {
-					geom.material = getMaterial(entity, alpha);
+					geom.material = fill
+						? getColor(fill, alpha)
+						: getEntityMaterial(entity, alpha);
 					geom.outline = false;
 				}
 
