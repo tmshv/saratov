@@ -148,7 +148,10 @@ function get3dTilesAttributes(item) {
 }
 
 function getFeature(item) {
-	if (!item || !item.content) return null; // item is not 3d tile
+	if (!item) return null;
+	if (item.id) return item.id;
+
+	if (!item.content) return null; // item is not 3d tile
 	return item.content.getFeature(0);
 }
 
