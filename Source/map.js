@@ -211,9 +211,9 @@ export function initMap(viewer) {
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: false},
+				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: true},
 				{name: 'Пространственные конверты', type: LAYER_CONVERT, checked: true},
-				{name: 'Участки озеленения', type: LAYER_GREEN, checked: false},
+				{name: 'Участки озеленения', type: LAYER_GREEN, checked: true},
 			]);
 		})
 
