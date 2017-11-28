@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
-import {groups, attributeTranslation} from './attributes';
+import {groups, attributeTranslation, attributeUnits} from './attributes';
+import Attribute from './Attribute';
 import {isEmptyObject} from "../../lib/utils";
 
 function t(key) {
@@ -131,54 +132,60 @@ const AT = ({attributes}) => {
 					.entries(attributes)
 					.map(([name, value]) => [name, t(name), value])
 					.map(([name, text, value], i) => (
-						<AttributeRow key={i} name={name} text={text} value={value}/>
+						<AttributeRow key={i} name={name} text={text} value={value} vertical={isVertical(name)}/>
 					))
 			}
 		</ul>
 	);
 };
 
-const AttributeRow = ({name, text, value}) => {
+const AttributeRow = ({name, text, value, vertical = false}) => {
 	return (
-		<li className='AttributeRow'>
+		<li className={classNames('AttributeRow', {
+			'vertical': vertical,
+		})}>
 			<span className='AttributeRow-Name'>{text}</span>
 			{createValue(name, value)}
 		</li>
 	);
 };
 
+function isVertical(name) {
+	if (name === 'colour') return true;
+	if (name === 'colour_start_floor') return true;
+	if (name === 'cap_k') return true;
+
+	return false;
+}
+
+function getUnit(name) {
+	return attributeUnits[name];
+}
+
 function createValue(name, value) {
 	if (name === 'colour') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
 	if (name === 'colour_start_floor') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
-	return <AttributeValue>{value}</AttributeValue>;
+	return <AttributeValue units={getUnit(name)}>{value}</AttributeValue>;
 }
 
 function parseColor(value) {
-	const colors = value
+	return value
 		.replace(/\//g, ';')
 		.split(';')
 		.map(x => `#${x}`);
-	return colors;
 }
 
-const round = (value, n = 1) => Math.round(value * n) / n;
-const isNumber = value => typeof value === 'number';
-
-const AttributeValue = ({children, n = 1}) => {
+const AttributeValue = ({children, units}) => {
 	return (
 		<span className='AttributeRow-Value'>
-			{
-				isNumber(children)
-					? round(children, n)
-					: children
-			}
+			<Attribute units={units}>{children}</Attribute>
 		</span>
 	);
 };
 
 const AttributeColorValue = ({children: colors}) => {
 	return (
-		<ul className='AttributeRow-Value'>
+		<ul className={classNames('AttributeRow-Value', 'AttributeColor')}>
 			{
 				colors.map((x, i) => (
 					<Color key={i}>{x}</Color>

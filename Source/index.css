@@ -156,6 +156,10 @@ ul {
     justify-content: space-around;
 }
 
+.AttributeRow.vertical {
+    flex-direction: column;
+}
+
 .AttributeRow-Name {
     text-align: left;
     margin-left: 8px;
@@ -167,6 +171,8 @@ ul {
 
     font-family: 'Univers LT CYR 45', Helvetica, sans-serif;
     /*font-weight: 700;*/
+
+    min-width: 40px;
 }
 
 .Legend ul{
@@ -229,4 +235,15 @@ ul {
 
 .LayersItem input {
     cursor: pointer;
+}
+
+.AttributeColor {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 150px;
+}
+
+.AttributeColor li{
+    margin: 2px;
 }
