@@ -127,7 +127,7 @@ const CONTENT_TYPE_GEOJSON = 'geojson';
 const CONTENT_TYPE_ATTRIBUTES = 'attributes';
 
 function loadData(viewer, params) {
-	const {url, styled, type, contentType} = params;
+	const {url, type, contentType} = params;
 	let promise;
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {

@@ -41,17 +41,15 @@ function initFeatureSelection(viewer) {
 
 		// Pick a new feature
 		const pickedFeature = viewer.scene.pick(movement.endPosition);
-		if (!pickedFeature) return highlightFeature();
-
-		if (!canSelectFeature(pickedFeature)) return highlightFeature();
 
 		// Highlight the feature if it's not already selected.
-		if (pickedFeature !== selected.feature) {
-			highlighted.feature = pickedFeature;
-			Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
-			pickedFeature.color = hoverColor;
-			highlightFeature(pickedFeature);
-		}
+		// if (pickedFeature !== selected.feature) {
+		// 	highlighted.feature = pickedFeature;
+		// 	Cesium.Color.clone(pickedFeature.color, highlighted.originalColor);
+		// 	pickedFeature.color = hoverColor;
+		// }
+
+		highlightFeature(pickedFeature);
 	};
 
 	const onLeftClick = movement => {
@@ -108,7 +106,6 @@ function selectFeature(item) {
 function highlightFeature(item) {
 	const feature = getFeature(item);
 	highlightFeatureSignal.trigger(feature);
-	return feature;
 }
 
 function getAttributes(item) {
