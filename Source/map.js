@@ -1,6 +1,6 @@
 import Cesium from 'cesium/Cesium';
 
-import {load3dTiles, loadConverts} from './map/load3dTiles';
+import {load3dTiles} from './map/load3dTiles';
 import {create3dTilesStyle} from './map/tileStyle';
 import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
@@ -132,9 +132,7 @@ function loadData(viewer, params) {
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {
 			promise = Promise.resolve(
-				type === 'convert'
-					? loadConverts(viewer, url)
-					: load3dTiles(viewer, url)
+				load3dTiles(viewer, url, type)
 			);
 			break;
 		}

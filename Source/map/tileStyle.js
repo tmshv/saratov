@@ -28,6 +28,13 @@ export function create3dTilesStyle(type) {
 	});
 }
 
+export function createPublicSpacesStyle() {
+	return new Cesium.Cesium3DTileStyle({
+		color: color('#00b26b', 0.7),
+		show: true,
+	});
+}
+
 export function createConvertStyle(name) {
 	return new Cesium.Cesium3DTileStyle({
 		color: {

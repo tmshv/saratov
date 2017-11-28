@@ -1,16 +1,17 @@
 import Cesium from 'cesium/Cesium';
-import {createDefault3dTilesStyle, createConvertStyle} from './tileStyle';
+import {createDefault3dTilesStyle, createConvertStyle, createPublicSpacesStyle} from './tileStyle';
 import {selectedFeatureSignal} from "../signals/index";
 
 function color(hex, alpha) {
 	return `color('${hex}', ${alpha})`;
 }
 
-export function load3dTiles(viewer, url, style) {
-	const tileset = createTileset(viewer, url);
+export function load3dTiles(viewer, url, type) {
+	if (type === 'convert') return loadConverts(viewer, url);
+	if (type === 'green') return loadPublicSpaces(viewer, url);
 
-	if (style) tileset.style = style;
-	else tileset.style = createDefault3dTilesStyle();
+	const tileset = createTileset(viewer, url);
+	tileset.style = createDefault3dTilesStyle();
 
 	setupHeightPosition(tileset);
 
@@ -40,6 +41,15 @@ export function loadConverts(viewer, url) {
 	initTilesetVisibilityBySelection(tileset);
 
 	tileset.show = false;
+	return tileset;
+}
+
+export function loadPublicSpaces(viewer, url) {
+	const tileset = createTileset(viewer, url);
+	tileset.style = createPublicSpacesStyle();
+
+	setupHeightPosition(tileset);
+
 	return tileset;
 }
 
