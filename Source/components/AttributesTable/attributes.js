@@ -138,6 +138,7 @@ export const groups = [
 
 	{
 		"name": "ТРЕБОВАНИЯ К ФАСАДАМ ЗДАНИЙ, ВЫХОДЯЩИМ НА УЛИЧНЫЙ ФРОНТ (КРОМЕ ПЕРВОГО ЭТАЖА)",
+		"footnote": "* неприменимо для индивидуальных жилых домов",
 		"attributes": [
 			"cap_k",
 			"glass_dencity",
@@ -157,6 +158,7 @@ export const groups = [
 
 	{
 		"name": "ТРЕБОВАНИЯ К ПЕРВЫМ ЭТАЖАМ ЗДАНИЙ, ВЫХОДЯЩИМ НА УЛИЧНЫЙ ФРОНТ",
+		"footnote": "* неприменимо для индивидуальных жилых домов",
 		"attributes": [
 			"start_floor_height",
 			"entrance_height",

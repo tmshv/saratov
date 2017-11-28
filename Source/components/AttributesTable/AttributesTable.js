@@ -56,6 +56,7 @@ export default class AttributesTable extends Component {
 		const displayGroups = groups
 			.map((x, i) => ({
 				name: x.name,
+				footnote: x.footnote,
 				attributes: selectAttributes(x.attributes, attributes)
 			}))
 			.filter(x => !isEmptyObject(x.attributes));
@@ -65,6 +66,7 @@ export default class AttributesTable extends Component {
 		const items = displayGroups
 			.map((x, i) => (
 				<AttributesGroup
+					footnote={x.footnote}
 					folded={changedGroupsSize
 						? i !== 0
 						: this.isFolded(i)
@@ -91,7 +93,7 @@ export default class AttributesTable extends Component {
 
 class AttributesGroup extends Component {
 	render() {
-		const {children, folded, attributes} = this.props;
+		const {children, folded, attributes, footnote} = this.props;
 		const {onClick} = this.props;
 
 		return (
@@ -104,12 +106,19 @@ class AttributesGroup extends Component {
 				<span className='AttributesTableItem-Name'
 				>{children}</span>
 				{folded ? null : (
-					<AT attributes={attributes}/>
+					<div>
+						<AT attributes={attributes}/>
+						<Footnote>{footnote}</Footnote>
+					</div>
 				)}
 			</li>
 		);
 	}
 }
+
+const Footnote = ({children}) => !children ? null : (
+	<span className="AttributesTableItem-Footnote">{children}</span>
+);
 
 const AT = ({attributes}) => {
 	return (

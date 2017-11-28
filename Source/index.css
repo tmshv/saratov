@@ -113,6 +113,11 @@ ul {
     padding: 0 0 8px;
 }
 
+.AttributesTableItem-Footnote {
+    margin: 0 16px 8px;
+    color: #666;
+    display: inline-block;
+}
 .AttributeRow {
     --padding: 0px;
     margin: 0 16px 4px;
