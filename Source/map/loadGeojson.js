@@ -68,7 +68,7 @@ function getMaterial(entity, alpha) {
 	return color;
 }
 
-export function loadStyledGeojson(viewer, url, alpha) {
+export function loadGeojsonConverts(viewer, url, {alpha}) {
 	const geojsonOptions = {
 		clampToGround: false,
 		strokeWidth: 1,

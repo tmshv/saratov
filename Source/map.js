@@ -2,7 +2,7 @@ import Cesium from 'cesium/Cesium';
 
 import {load3dTiles, loadConverts} from './map/load3dTiles';
 import {create3dTilesStyle} from './map/tileStyle';
-import {loadGeojson, loadStyledGeojson, parseGeojsonOptions} from './map/loadGeojson';
+import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
@@ -143,8 +143,8 @@ function loadData(viewer, params) {
 			const options = params.options
 				? parseGeojsonOptions(params.options)
 				: {};
-			promise = styled
-				? loadStyledGeojson(viewer, url, params.alpha)
+			promise = type === 'convert'
+				? loadGeojsonConverts(viewer, url, params)
 				: loadGeojson(viewer, url, options);
 			break;
 		}
