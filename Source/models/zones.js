@@ -30,6 +30,10 @@ export const zones = [
 		zoneName: 'zone_ht3',
 	},
 	{
+		name: 'Зона ОП',
+		color: '#00b26b',
+	},
+	{
 		name: 'ОКН',
 		color: '#ffffff',
 	},
