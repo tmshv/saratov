@@ -53,7 +53,7 @@ export const attributeUnits = {
 	width: "м",
 	depth: "м",
 	"angle lot": "м",
-	max_area: "м2",
+	max_area: "м²",
 	min_area: "м²",
 	lot_dencity: "%",
 	mm_dencity: "%",

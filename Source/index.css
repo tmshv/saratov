@@ -100,7 +100,7 @@ ul {
 }
 
 .AttributesTableItem--unfolded .AttributesTableItem-Name {
-    margin: 8px 16px;
+    margin: 16px;
     /*display: inline-block;*/
     font-weight: 700;
 }
@@ -110,7 +110,7 @@ ul {
 /*}*/
 
 .AttributesBlock {
-    padding: 0 0 8px;
+    padding-bottom: 16px;
 }
 
 .AttributesTableItem-Footnote {
@@ -118,25 +118,28 @@ ul {
     color: #666;
     display: inline-block;
 }
+
+
+/*Attribute Row*/
+
 .AttributeRow {
     --padding: 0px;
-    margin: 0 16px 4px;
+    margin: 16px;
     padding-top: var(--padding);
     padding-bottom: var(--padding);
-    border-bottom: 2px solid black;
+    border-bottom: 1px solid #eaeaea;
 
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
-.AttributeRow.vertical {
-    flex-direction: column;
+.AttributeRow:last-child {
+    margin-bottom: 0;
 }
 
 .AttributeRow-Name {
     text-align: left;
-    margin-left: 8px;
 }
 
 .AttributeRow-Value {
@@ -146,8 +149,27 @@ ul {
     font-family: 'Univers LT CYR 45', Helvetica, sans-serif;
     /*font-weight: 700;*/
 
-    min-width: 40px;
+        min-width: 100px;
 }
+
+
+/*Vertical Attribute*/
+
+.AttributeRow.vertical {
+    flex-direction: column;
+}
+
+.AttributeRow.vertical .AttributeRow-Name {
+    margin-bottom: 8px;
+}
+
+.AttributeRow.vertical .AttributeRow-Value {
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+
+/*Legend*/
 
 .Legend ul{
     display: flex;
@@ -221,7 +243,9 @@ ul {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    max-width: 150px;
+    max-width: 240px;
+
+    margin-bottom: 16px;
 }
 
 .AttributeColor li{

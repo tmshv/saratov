@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import {groups, attributeTranslation, attributeUnits} from './attributes';
 import Attribute from './Attribute';
 import {isEmptyObject} from "../../lib/utils";
+import {Float} from "../index";
 
 function t(key) {
 	return key in attributeTranslation
@@ -61,7 +62,7 @@ export default class AttributesTable extends Component {
 			}))
 			.filter(x => !isEmptyObject(x.attributes));
 
-		const changedGroupsSize = false;//groups.length !== displayGroups.length;
+		const changedGroupsSize = groups.length !== displayGroups.length;
 
 		const items = displayGroups
 			.map((x, i) => (
