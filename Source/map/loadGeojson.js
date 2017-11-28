@@ -54,14 +54,6 @@ function getColor(hex, alpha) {
 
 function getEntityMaterial(entity, alpha) {
 	const type = entity.properties.zone.getValue();
-	// const type = entity.getProperty('layer_name');
-
-	const rgba = ([r, g, b]) => ({
-		red: r / 255,
-		green: g / 255,
-		blue: b / 255,
-		alpha: .5,
-	});
 
 	const hex = getZoneColor(type, '#ff00ff');
 	return getColor(hex, alpha);
@@ -83,16 +75,14 @@ export function loadGeojsonConverts(viewer, url, {alpha, fill}) {
 				const geom = entity.polygon
 					? entity.polygon
 					: entity.polyline;
+					// entity.corridor; // corridor if clampToGround enabled
+
 				if (geom) {
 					geom.material = fill
 						? getColor(fill, alpha)
 						: getEntityMaterial(entity, alpha);
 					geom.outline = false;
 				}
-
-				// entity.polygon.outline = false;
-				// entity.polygon.outlineColor = new Cesium.Color(0.0, 0.0, 0.0, 1.0);
-				// entity.polygon.outlineWidth = 1;
 			});
 
 			return dataSource;
