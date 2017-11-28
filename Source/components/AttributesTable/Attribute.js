@@ -8,7 +8,7 @@ const value = (value, n) => isNumber(value)
 
 const Value = ({units, children}) => (!units
 		? `${children}`
-		: `${children} ${units}`
+		: <span>{children}&thinsp;{units}</span>
 );
 
 export default ({children, units}) => {
