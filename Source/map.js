@@ -39,6 +39,10 @@ function setupViewer(viewer) {
 	// Setup scale for better retina support
 	// viewer.resolutionScale = window.devicePixelRatio;
 	viewer.resolutionScale = 1;
+
+	// viewer.fog = new Cesium.Fog({
+	// 	density: 3.0e-3,
+	// });
 }
 
 export function getDefaultViewerOptions() {
