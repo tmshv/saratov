@@ -7,11 +7,10 @@ pipeline:
     when:
       branch: dev
 
-  pipeline:
-    deploy:
-      image: drillster/drone-rsync
-      hosts: [ "serverkb.strelka.com" ]
-      key: ${PRIVATE_KEY}
-      source: ./Build
-      target: ~/SaratovBuild
+  deploy:
+    image: drillster/drone-rsync
+    hosts: [ "serverkb.strelka.com" ]
+    key: ${PRIVATE_KEY}
+    source: ./Build
+    target: ~/SaratovBuild
 
