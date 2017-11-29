@@ -9,6 +9,7 @@ import connect from '../../decorators/connect';
 import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal} from '../../signals';
 import {Float, BlurBlock} from '../';
 import Canvas from '../Canvas';
+import Settings from '../Settings';
 
 @connect(
 	highlightFeatureSignal,
@@ -33,6 +34,7 @@ import Canvas from '../Canvas';
 export default class App extends Component {
 	render() {
 		const {attributes, canInteract, onCanvasRender} = this.props;
+		const borderRadius = '2px';
 
 		return (
 			<div className='App'>
@@ -55,7 +57,7 @@ export default class App extends Component {
 
 				<Float top={50} left={10}>
 					<BlurBlock style={{
-						borderRadius: '2px'
+						borderRadius,
 					}}>
 						<ZoomControl/>
 					</BlurBlock>
@@ -64,6 +66,14 @@ export default class App extends Component {
 				<Float bottom={0} left={0}>
 					<BlurBlock>
 						<Legend/>
+					</BlurBlock>
+				</Float>
+
+				<Float bottom={50} left={10}>
+					<BlurBlock style={{
+						borderRadius,
+					}}>
+						<Settings/>
 					</BlurBlock>
 				</Float>
 

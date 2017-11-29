@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 const defaultMapSignalToProps = data => data;
 
-export default (signal, mapSignalToProps=defaultMapSignalToProps) => ComposedComponent => class extends Component {
+export default (signal, mapSignalToProps = defaultMapSignalToProps, waitForSignal = false) => ComposedComponent => class extends Component {
 	constructor(props) {
 		super(props);
 		this.onSignalUpdate = this.onSignalUpdate.bind(this);
@@ -22,6 +22,8 @@ export default (signal, mapSignalToProps=defaultMapSignalToProps) => ComposedCom
 	};
 
 	render() {
+		if (waitForSignal && !this.data) return null;
+
 		const data = mapSignalToProps(this.data);
 		const props = {
 			...this.props,

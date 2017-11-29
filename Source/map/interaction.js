@@ -160,15 +160,11 @@ function canSelectFeature(item) {
 }
 
 function setCamera(viewer, {lon, lat}) {
-	const position = Cesium.Cartesian3.fromDegrees(lon, lat, 1000.0);
+	const position = Cesium.Cartesian3.fromDegrees(lon, lat, 100.0);
 
-	viewer.camera.flyTo({
-		destination: position,
-		duration: 1000 / 1000,
-		// orientation: {
-		// 	heading: 5.8598696803362635,
-		// 	pitch: -0.4101786746245062,
-		// 	roll: 6.281716442987705,
-		// }
-	});
+	// 2. Using a HeadingPitchRange offset
+	const heading = Cesium.Math.toRadians(45.0);
+	const pitch = Cesium.Math.toRadians(-45.0);
+	const range = 500.0;
+	viewer.camera.lookAt(position, new Cesium.HeadingPitchRange(heading, pitch, range));
 }

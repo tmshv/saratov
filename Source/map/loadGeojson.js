@@ -62,7 +62,7 @@ function getEntityMaterial(entity, alpha) {
 export function loadGeojsonConverts(viewer, url, {alpha, fill}) {
 	const geojsonOptions = {
 		clampToGround: false,
-		strokeWidth: 3,
+		strokeWidth: 2,
 		// stroke: getColor(null, alpha),
 		// fill: getColor(null, alpha),
 	};
