@@ -18,7 +18,7 @@ function setupApp(viewer) {
 	settingsSignal.trigger({
 		devicePixelRatio,
 		shadows: false,
-		quality: 1.0,
+		quality: 0.5,
 		enableGlobalLighting: false,
 	});
 
