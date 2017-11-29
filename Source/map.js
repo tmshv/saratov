@@ -6,11 +6,35 @@ import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadG
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
-import {selectedLayersSignal} from './signals';
+import {selectedLayersSignal, settingsSignal} from './signals';
 
 const layers = [];
 
 const attributesMap = new Map();
+
+function setupApp(viewer) {
+	const devicePixelRatio = window.devicePixelRatio;
+
+	settingsSignal.trigger({
+		devicePixelRatio,
+		shadows: false,
+		quality: 1.0,
+		enableGlobalLighting: false,
+	});
+
+	settingsSignal.on(settings => {
+		// Cask shadows
+		viewer.shadows = settings.shadows;
+
+		// Enable lighting based on sun/moon positions
+		viewer.scene.globe.enableLighting = settings.enableGlobalLighting;
+
+		// Setup scale for better retina support
+		const quality = settings.quality;
+		const devicePixelRatio = settings.devicePixelRatio;
+		viewer.resolutionScale = devicePixelRatio * quality;
+	});
+}
 
 function setupTime(viewer) {
 	viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
@@ -27,22 +51,6 @@ function setupTime(viewer) {
 	// viewer.clock.clockStep = Cesium.ClockStep.SYSTEM_CLOCK_MULTIPLIER; // tick computation mode
 	// viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; // loop at the end
 	// viewer.timeline.zoomTo(viewer.clock.startTime, viewer.clock.stopTime); // set visible range
-}
-
-function setupViewer(viewer) {
-	// Cask shadows
-	// viewer.shadows = true;
-
-	// Enable lighting based on sun/moon positions
-	// viewer.scene.globe.enableLighting = true;
-
-	// Setup scale for better retina support
-	// viewer.resolutionScale = window.devicePixelRatio;
-	viewer.resolutionScale = 1;
-
-	// viewer.fog = new Cesium.Fog({
-	// 	density: 3.0e-3,
-	// });
 }
 
 export function getDefaultViewerOptions() {
@@ -180,11 +188,14 @@ export function getAttributes() {
 }
 
 export function initMap(viewer) {
-	setupViewer(viewer);
 	setupTime(viewer);
 	setupCamera(viewer);
 	loadImagery(viewer);
 	initInteraction(viewer);
+
+	setTimeout(() => {
+		setupApp(viewer);
+	}, 10);
 
 	selectedLayersSignal.on(onSelectedLayersUpdate);
 

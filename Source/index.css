@@ -220,6 +220,15 @@ ul {
     cursor: pointer;
 }
 
+.Settings {
+    color: white;
+    font-size: 12px;
+}
+
+.SettingsItem {
+    margin-bottom: 4px;
+}
+
 .Layers {
     color: white;
     font-size: 12px;

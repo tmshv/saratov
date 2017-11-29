@@ -1,7 +1,13 @@
 import React, {Component} from 'react';
 import connect from '../../decorators/connect';
-import {canvasSignal} from '../../signals';
+import {canvasSignal, settingsSignal} from '../../signals';
 
+@connect(
+	settingsSignal,
+	(settings = {}) => ({
+		coef: (settings.devicePixelRatio || 1) * (settings.quality || 1),
+	})
+)
 @connect(
 	canvasSignal,
 	source => ({
@@ -19,12 +25,15 @@ export default class Canvas extends Component {
 	}
 
 	updateCanvas(source, blur) {
-		const {width, height, sizeElement} = this.props;
+		const {coef, width, height, sizeElement} = this.props;
 		const se = sizeElement
 			? sizeElement
 			: this.canvas;
-		// const {x, y, width: w, height: h} = this.canvas.getBoundingClientRect();
-		const {x, y, width: w, height: h} = se.getBoundingClientRect();
+		let {x, y, width: w, height: h} = se.getBoundingClientRect();
+		x *= coef;
+		y *= coef;
+		w *= coef;
+		h *= coef;
 
 		this.ctx.drawImage(source, x, y, w, h, 0, 0, width, height);
 		this.ctx.filter = `blur(${blur}px)`;
