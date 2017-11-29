@@ -2,61 +2,79 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import Map from '../Map';
 import {initMap, getDefaultViewerOptions} from '../../map';
-import AttributesTable from '../AttributesTable';
 import Legend from '../Legend';
-import Layers from '../Layers';
+import ZoomControl from '../ZoomControl';
+import ATBlock from '../ATBlock';
 import connect from '../../decorators/connect';
-import {selectedFeatureSignal} from '../../signals';
+import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal} from '../../signals';
+import {Float, BlurBlock} from '../';
+import Canvas from '../Canvas';
 
 @connect(
-	selectedFeatureSignal,
+	highlightFeatureSignal,
 	data => ({
-		attributes: data,
+		canInteract: Boolean(data),
+	})
+)
+@connect(
+	selectedFeatureSignal,
+	attributes => ({
+		attributes,
+	})
+)
+@connect(
+	null,
+	() => ({
+		onCanvasRender: canvas => {
+			canvasSignal.trigger(canvas);
+		},
 	})
 )
 export default class App extends Component {
 	render() {
-		const {attributes} = this.props;
-
-		const attributesBlock = attributes
-			? (
-				<Block className='FlowBlock-Attributes'>
-					<AttributesTable attributes={attributes}/>
-				</Block>
-			)
-			: null;
+		const {attributes, canInteract, onCanvasRender} = this.props;
 
 		return (
 			<div className='App'>
 				<Map
 					options={getDefaultViewerOptions()}
 					init={initMap}
+					canInteract={canInteract}
+					onCanvasRender={onCanvasRender}
 				/>
 
-				<Block className='FlowBlock-Logo'>
-					<div>
-						<h1>
-							ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА
-						</h1>
-					</div>
-				</Block>
+				<Float top={0} left={0}>
+					<BlurBlock>
+						<div className={classNames('Logo', 'Block')}>
+							<h1>
+								ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА
+							</h1>
+						</div>
+					</BlurBlock>
+				</Float>
 
-				<Block className='FlowBlock-Legend'>
-					<Legend/>
-				</Block>
+				<Float top={50} left={10}>
+					<BlurBlock style={{
+						borderRadius: '2px'
+					}}>
+						<ZoomControl/>
+					</BlurBlock>
+				</Float>
 
-				<Block className='FlowBlock-Layers'>
-					<Layers/>
-				</Block>
+				<Float bottom={0} left={0}>
+					<BlurBlock>
+						<Legend/>
+					</BlurBlock>
+				</Float>
 
-				{attributesBlock}
+				{!attributes ? null : (
+					<Float top={10} right={10}>
+						<BlurBlock>
+							<ATBlock attributes={attributes}/>
+						</BlurBlock>
+					</Float>
+				)}
 			</div>
 		)
 	}
 };
-
-const Block = ({className, children}) => (
-	<div className={classNames('Flow-Block', 'Block-Background', className)}>
-		{children}
-	</div>
-);

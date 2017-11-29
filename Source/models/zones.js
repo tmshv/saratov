@@ -30,7 +30,29 @@ export const zones = [
 		zoneName: 'zone_ht3',
 	},
 	{
+		name: 'Зона ОП',
+		color: '#00b26b',
+	},
+	{
 		name: 'ОКН',
 		color: '#ffffff',
 	},
 ];
+
+export function getZoneColor(name, defaultValue) {
+	const zone = zoneMap.get(name);
+	return zone
+		? zone.color
+		: defaultValue;
+}
+
+const zoneMap = createZoneMap(zones);
+
+function createZoneMap(list) {
+	return list.reduce(
+		(map, x) => x.zoneName
+			? map.set(x.zoneName, x)
+			: map,
+		new Map()
+	);
+}

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import classNames from 'classnames';
 import {zones} from '../../models/zones';
 
 const legend = zones.map(x => ({
@@ -15,7 +16,7 @@ export default class Legend extends Component {
 		));
 
 		return (
-			<div className='Legend'>
+			<div className={classNames('Legend', 'Block')}>
 				<ul>
 					{items}
 				</ul>

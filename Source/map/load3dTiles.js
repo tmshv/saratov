@@ -1,47 +1,26 @@
 import Cesium from 'cesium/Cesium';
-import {zones} from '../models/zones';
-
-export function create3dTilesStyle(type) {
-	if (type === 'green') {
-		return new Cesium.Cesium3DTileStyle({
-			color: color('#00b26b', 0.7),
-			show: true,
-		});
-	}
-
-	const zone = attrEqual.bind(null, 'systemZone');
-
-	return new Cesium.Cesium3DTileStyle({
-		color: {
-			conditions: [
-				...zones.map(x => [
-					zone(x.zoneName), color(x.color, 1)
-				]),
-
-				['true', color('#FFFFFF', 1.0)]
-			]
-		},
-		show: true,
-	});
-}
-
-function createDefault3dTilesStyle() {
-	return new Cesium.Cesium3DTileStyle({
-		color: color('#ffffff', 1.0),
-		show: true,
-	});
-}
+import {createDefault3dTilesStyle, createConvertStyle, createPublicSpacesStyle} from './tileStyle';
+import {selectedFeatureSignal} from "../signals/index";
 
 function color(hex, alpha) {
 	return `color('${hex}', ${alpha})`;
 }
 
-function attrEqual(attribute, value){
-	return `\${${attribute}} === '${value}'`;
+export function load3dTiles(viewer, url, type) {
+	if (type === 'convert') return loadConverts(viewer, url);
+	if (type === 'green') return loadPublicSpaces(viewer, url);
+
+	const tileset = createTileset(viewer, url);
+	tileset.style = createDefault3dTilesStyle();
+
+	setupHeightPosition(tileset);
+
+	tileset.show = false;
+	return tileset;
 }
 
-export function load3dTiles(viewer, url, style) {
-	const tileset = viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
+function createTileset(viewer, url) {
+	return viewer.scene.primitives.add(new Cesium.Cesium3DTileset({
 		url,
 		maximumScreenSpaceError: 16, // default value
 
@@ -51,15 +30,39 @@ export function load3dTiles(viewer, url, style) {
 		// debugShowUrl: true,
 		// debugWireframe: true,
 	}));
+}
 
-	if (style) tileset.style = style;
-	else tileset.style = createDefault3dTilesStyle();
 
-	// Adjust the tileset height so it's not floating above terrain
-	// var heightOffset = -32;
+export function loadConverts(viewer, url) {
+	const tileset = createTileset(viewer, url);
+	tileset.style = createConvertStyle();
+
+	setupHeightPosition(tileset);
+	initTilesetVisibilityBySelection(tileset);
+
+	tileset.show = false;
+	return tileset;
+}
+
+export function loadPublicSpaces(viewer, url) {
+	const tileset = createTileset(viewer, url);
+	tileset.style = createPublicSpacesStyle();
+
+	setupHeightPosition(tileset);
+
+	return tileset;
+}
+
+/**
+ * Adjust the tileset height so it's not floating above terrain
+ *
+ * @param tileset
+ * @returns {*}
+ */
+function setupHeightPosition(tileset) {
 	const heightOffset = 0;
 	tileset.readyPromise
-		.then(function (tileset) {
+		.then(tileset => {
 			// Position tileset
 			const boundingSphere = tileset.boundingSphere;
 			const cartographic = Cesium.Cartographic.fromCartesian(boundingSphere.center);
@@ -67,10 +70,25 @@ export function load3dTiles(viewer, url, style) {
 			const offsetPosition = Cesium.Cartesian3.fromRadians(cartographic.longitude, cartographic.latitude, heightOffset);
 			const translation = Cesium.Cartesian3.subtract(offsetPosition, surfacePosition, new Cesium.Cartesian3());
 			tileset.modelMatrix = Cesium.Matrix4.fromTranslation(translation);
-
-			// pickedFeature.color = Cesium.Color.YELLOW;
 		});
-
-	tileset.show = false;
 	return tileset;
+}
+
+function initTilesetVisibilityBySelection(tileset) {
+	let currentName = null;
+
+	selectedFeatureSignal.on(attributes => {
+		currentName = attributes
+			? attributes.name
+			: null;
+
+		if (currentName) {
+			tileset.show = true;
+			tileset.style = createConvertStyle(currentName);
+		} else {
+			tileset.show = false;
+		}
+	});
+
+	// tileset.show = false;
 }

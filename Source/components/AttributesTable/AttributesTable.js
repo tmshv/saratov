@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
-import {groups, attributeTranslation} from './attributes';
+import {groups, attributeTranslation, attributeUnits} from './attributes';
+import Attribute from './Attribute';
 import {isEmptyObject} from "../../lib/utils";
+import {Float} from "../index";
 
 function t(key) {
 	return key in attributeTranslation
@@ -25,22 +27,29 @@ export default class AttributesTable extends Component {
 		super(props);
 
 		this.unfoldGroup = this.unfoldGroup.bind(this);
+	}
 
-		this.state = {
-			folded: groups.map((x, i) => i !== 0), // Only first group is unfolded by default
-		};
+	update(folded) {
+		const {onChange} = this.props;
+		onChange(folded);
 	}
 
 	unfoldGroup(index) {
-		const {folded} = this.state;
-		this.setState({
-			folded: folded.map((x, i) => i !== index), // Only indexed group is unfolded
-		})
+		const {folded} = this.props;
+		const newFolded = (folded || [])
+			.map((x, i) => i !== index); // Only indexed group is unfolded
+		newFolded[index] = false;
+
+		this.update(newFolded);
 	}
 
 	isFolded(index) {
-		const {folded} = this.state;
-		return folded[index];
+		const {folded} = this.props;
+
+		const value = folded[index];
+		return value !== undefined
+			? value
+			: true;
 	}
 
 	render() {
@@ -48,6 +57,7 @@ export default class AttributesTable extends Component {
 		const displayGroups = groups
 			.map((x, i) => ({
 				name: x.name,
+				footnote: x.footnote,
 				attributes: selectAttributes(x.attributes, attributes)
 			}))
 			.filter(x => !isEmptyObject(x.attributes));
@@ -57,6 +67,7 @@ export default class AttributesTable extends Component {
 		const items = displayGroups
 			.map((x, i) => (
 				<AttributesGroup
+					footnote={x.footnote}
 					folded={changedGroupsSize
 						? i !== 0
 						: this.isFolded(i)
@@ -72,7 +83,7 @@ export default class AttributesTable extends Component {
 			));
 
 		return (
-			<div className='AttributesTable'>
+			<div className={classNames('AttributesTable', 'Block')}>
 				<ul>
 					{items}
 				</ul>
@@ -83,7 +94,7 @@ export default class AttributesTable extends Component {
 
 class AttributesGroup extends Component {
 	render() {
-		const {children, folded, attributes} = this.props;
+		const {children, folded, attributes, footnote} = this.props;
 		const {onClick} = this.props;
 
 		return (
@@ -96,12 +107,19 @@ class AttributesGroup extends Component {
 				<span className='AttributesTableItem-Name'
 				>{children}</span>
 				{folded ? null : (
-					<AT attributes={attributes}/>
+					<div>
+						<AT attributes={attributes}/>
+						<Footnote>{footnote}</Footnote>
+					</div>
 				)}
 			</li>
 		);
 	}
 }
+
+const Footnote = ({children}) => !children ? null : (
+	<span className="AttributesTableItem-Footnote">{children}</span>
+);
 
 const AT = ({attributes}) => {
 	return (
@@ -109,37 +127,77 @@ const AT = ({attributes}) => {
 			{
 				Object
 					.entries(attributes)
-					.map(([name, value]) => [t(name), value])
-					.map(([name, value], i) => (
-						<AttributeRow key={i} name={name}>
-							{value}
-						</AttributeRow>
+					.map(([name, value]) => [name, t(name), value])
+					.map(([name, text, value], i) => (
+						<AttributeRow key={i} name={name} text={text} value={value} vertical={isVertical(name)}/>
 					))
 			}
 		</ul>
 	);
 };
 
-const AttributeRow = ({name, children: value}) => {
+const AttributeRow = ({name, text, value, vertical = false}) => {
 	return (
-		<li className='AttributeRow'>
-			<span className='AttributeRow-Name'>{name}</span>
-			<AttributeValue>{value}</AttributeValue>
+		<li className={classNames('AttributeRow', {
+			'vertical': vertical,
+		})}>
+			<span className='AttributeRow-Name'>{text}</span>
+			{createValue(name, value)}
 		</li>
 	);
 };
 
-const round = (value, n = 1) => Math.round(value * n) / n;
-const isNumber = value => typeof value === 'number';
+function isVertical(name) {
+	if (name === 'colour') return true;
+	if (name === 'colour_start_floor') return true;
+	if (name === 'cap_k') return true;
 
-const AttributeValue = ({children, n = 1}) => {
+	return false;
+}
+
+function getUnit(name) {
+	return attributeUnits[name];
+}
+
+function createValue(name, value) {
+	if (name === 'colour') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
+	if (name === 'colour_start_floor') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
+	return <AttributeValue units={getUnit(name)}>{value}</AttributeValue>;
+}
+
+function parseColor(value) {
+	return value
+		.replace(/\//g, ';')
+		.split(';')
+		.map(x => `#${x}`);
+}
+
+const AttributeValue = ({children, units}) => {
 	return (
 		<span className='AttributeRow-Value'>
-			{
-				isNumber(children)
-					? round(children, n)
-					: children
-			}
+			<Attribute units={units}>{children}</Attribute>
 		</span>
 	);
 };
+
+const AttributeColorValue = ({children: colors}) => {
+	return (
+		<ul className={classNames('AttributeRow-Value', 'AttributeColor')}>
+			{
+				colors.map((x, i) => (
+					<Color key={i}>{x}</Color>
+				))
+			}
+		</ul>
+	);
+};
+
+const Color = ({children: color}) => (
+	<li>
+		<div style={{
+			width: '30px',
+			height: '30px',
+			backgroundColor: color,
+		}}/>
+	</li>
+);

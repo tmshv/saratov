@@ -1,13 +1,16 @@
 import Cesium from 'cesium/Cesium';
 
-import {load3dTiles, create3dTilesStyle} from './map/load3dTiles';
-import {loadGeojson, parseGeojsonOptions} from './map/loadGeojson';
-import {loadMapBoxImagery as loadImagery} from './map/loadImagery';
+import {load3dTiles} from './map/load3dTiles';
+import {create3dTilesStyle} from './map/tileStyle';
+import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
+import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {selectedLayersSignal} from './signals';
 
 const layers = [];
+
+const attributesMap = new Map();
 
 function setupTime(viewer) {
 	viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
@@ -34,7 +37,12 @@ function setupViewer(viewer) {
 	// viewer.scene.globe.enableLighting = true;
 
 	// Setup scale for better retina support
-	viewer.resolutionScale = window.devicePixelRatio;
+	// viewer.resolutionScale = window.devicePixelRatio;
+	viewer.resolutionScale = 1;
+
+	// viewer.fog = new Cesium.Fog({
+	// 	density: 3.0e-3,
+	// });
 }
 
 export function getDefaultViewerOptions() {
@@ -62,14 +70,40 @@ export function getDefaultConfig() {
 	}
 }
 
-function loadConfig(url) {
-	// return Promise.resolve([{
-	// 	"url": "Data/Models/green-1.geojson",
-	// 	"type": "green",
-	// 	"contentType": "geojson"
-	// }]);
+function join(lists) {
+	return lists.reduce((acc, x) => [...acc, ...x], []);
+}
+
+function loadJson(url) {
 	return fetch(url)
 		.then(x => x.json())
+		.catch(e => null);
+}
+
+function loadConfig(url) {
+	const dataSourceType = 'dataSource';
+	return loadJson(url)
+		.then(config => {
+			const dataSource = config.dataSource
+				.filter(x => x.contentType !== dataSourceType);
+
+			const innerConfigUrls = config.dataSource
+				.filter(x => x.contentType === dataSourceType)
+				.map(x => x.url);
+			return Promise.all(innerConfigUrls.map(loadJson))
+				.then(innerConfigs => {
+					const inner = join(innerConfigs
+						.map(x => x.dataSource)
+					);
+					return {
+						...config,
+						dataSource: [
+							...dataSource,
+							...inner,
+						]
+					};
+				})
+		})
 		.catch(e => getDefaultConfig());
 }
 
@@ -94,17 +128,15 @@ const LAYER_GREEN = 'green';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
+const CONTENT_TYPE_ATTRIBUTES = 'attributes';
 
 function loadData(viewer, params) {
-	const {url, styled, type, contentType} = params;
+	const {url, type, contentType} = params;
 	let promise;
 	switch (contentType) {
 		case CONTENT_TYPE_3D_TILES: {
-			const style = styled
-				? create3dTilesStyle(type)
-				: null;
 			promise = Promise.resolve(
-				load3dTiles(viewer, url, style)
+				load3dTiles(viewer, url, type)
 			);
 			break;
 		}
@@ -113,7 +145,14 @@ function loadData(viewer, params) {
 			const options = params.options
 				? parseGeojsonOptions(params.options)
 				: {};
-			promise = loadGeojson(viewer, url, options);
+			promise = type === 'convert'
+				? loadGeojsonConverts(viewer, url, params)
+				: loadGeojson(viewer, url, options);
+			break;
+		}
+
+		case CONTENT_TYPE_ATTRIBUTES: {
+			promise = loadJson(url);
 			break;
 		}
 	}
@@ -122,7 +161,22 @@ function loadData(viewer, params) {
 		.then(data => ({
 			data,
 			type,
+			contentType,
 		}));
+}
+
+function saveAttributes(items) {
+	items = join(items);
+	items.forEach(x => {
+		const name = x.systemName;
+		attributesMap.set(name, x);
+	});
+
+	window.saratovAttributes = getAttributes();
+}
+
+export function getAttributes() {
+	return attributesMap;
 }
 
 export function initMap(viewer) {
@@ -147,15 +201,21 @@ export function initMap(viewer) {
 			);
 		})
 		.then(items => {
+			const attributes = items.filter(x => x.contentType === CONTENT_TYPE_ATTRIBUTES);
+			saveAttributes(attributes.map(x => x.data));
+
+			return items.filter(x => x.contentType !== CONTENT_TYPE_ATTRIBUTES);
+		})
+		.then(items => {
 			items.forEach(x => {
 				layers.push(x);
 			});
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: false},
+				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: true},
 				{name: 'Пространственные конверты', type: LAYER_CONVERT, checked: true},
-				{name: 'Участки озеленения', type: LAYER_GREEN, checked: false},
+				{name: 'Участки озеленения', type: LAYER_GREEN, checked: true},
 			]);
 		})
 
