@@ -8,10 +8,9 @@ pipeline:
       branch: dev
 
   deploy:
-    image: drillster/drone-rsync
-    hosts: [ "serverkb.strelka.com" ]
-    key: $PRIVATE_KEY
-    user: saratov
-    source: ./Build
-    target: ~/SaratovBuild
-
+      image: appleboy/drone-scp
+      host: serverkb.strelka.com
+      username: saratov
+      target: ~/SaratovApp/Build
+      source: ./Build
+      secrets: [scp_key]
