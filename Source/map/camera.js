@@ -33,15 +33,8 @@ class StoredView {
 }
 
 export function setupCamera(viewer) {
-	// Create an initial camera view
-	// var initialPosition = new Cesium.Cartesian3.fromDegrees(
-	//     -73.998114468289017509,
-	//     40.674512895646692812,
-	//     2631.082799425431
-	// );
-	// var initialOrientation = new Cesium.HeadingPitchRoll.fromDegrees(7.1077496389876024807, -31.987223091598949054, 0.025883251314954971306);
-
 	setupController(viewer);
+	createCameraDebugTool(viewer);
 
 	const initialPosition = new Cesium.Cartesian3.fromDegrees(
 		46.056233171535396309,
@@ -67,11 +60,6 @@ export function setupCamera(viewer) {
 	homeCameraView.pitchAdjustHeight = 2000;
 	homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
 
-	// window.cam = () => {
-	// 	const v = new StoredView();
-	// 	console.log(v.save(viewer.camera));
-	// };
-
 	zoomSignal.on(value => {
 		if (value > 0) {
 			viewer.camera.zoomIn(value);
@@ -79,6 +67,13 @@ export function setupCamera(viewer) {
 			viewer.camera.zoomOut(Math.abs(value));
 		}
 	});
+}
+
+function createCameraDebugTool(viewer) {
+	window.cam = () => {
+		const v = new StoredView();
+		console.log(v.save(viewer.camera));
+	};
 }
 
 function setupController(viewer) {
