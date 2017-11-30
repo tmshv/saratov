@@ -8,7 +8,6 @@ import ATBlock from '../ATBlock';
 import connect from '../../decorators/connect';
 import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal} from '../../signals';
 import {Float, BlurBlock} from '../';
-import Canvas from '../Canvas';
 import Settings from '../Settings';
 
 @connect(

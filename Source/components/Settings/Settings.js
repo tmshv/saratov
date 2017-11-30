@@ -61,7 +61,7 @@ export default class Settings extends Component {
 							value={quality}
 							onChange={onChangeQuality}
 							options={[
-								{name: 'Хорошее качество', value: 1.0},
+								{name: 'Высокое качество', value: 1.0},
 								{name: 'Среднее качество', value: 0.5},
 								{name: 'Плохое качество', value: 0.25},
 							]}

@@ -1,0 +1,19 @@
+pipeline:
+  app:
+    image: node:8
+    commands:
+      - npm install
+      - npm run build
+    when:
+      branch: master
+
+  deploy:
+      image: appleboy/drone-scp
+      host: serverkb.strelka.com
+      username: saratov
+      target: ~/SaratovApp/Build_${DRONE_BUILD_NUMBER}
+      source: ./Build/*
+      secrets: [scp_key]
+      when:
+        branch: master
+        status: success
