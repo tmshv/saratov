@@ -11,6 +11,6 @@ pipeline:
       image: appleboy/drone-scp
       host: serverkb.strelka.com
       username: saratov
-      target: ~/SaratovApp/Build_$DRONE_BUILD_NUMBER
+      target: ~/SaratovApp/Build_${DRONE_BUILD_NUMBER}
       source: ./Build/*
       secrets: [scp_key]
