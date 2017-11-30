@@ -5,7 +5,7 @@ pipeline:
       - npm install
       - npm run build
     when:
-      branch: dev
+      branch: master
 
   deploy:
       image: appleboy/drone-scp
@@ -14,3 +14,5 @@ pipeline:
       target: ~/SaratovApp/Build_${DRONE_BUILD_NUMBER}
       source: ./Build/*
       secrets: [scp_key]
+      when:
+        status: success
