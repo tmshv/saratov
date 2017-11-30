@@ -15,4 +15,5 @@ pipeline:
       source: ./Build/*
       secrets: [scp_key]
       when:
+        branch: master
         status: success
