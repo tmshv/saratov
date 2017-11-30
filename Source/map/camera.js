@@ -14,7 +14,7 @@ class StoredView {
 	save(camera) {
 		this.position = Cesium.Cartesian3.clone(camera.positionWC, this.position);
 		this.heading = camera.heading;
-		this.picth = camera.pitch;
+		this.pitch = camera.pitch;
 		this.roll = camera.roll;
 		this.transform = Cesium.Matrix4.clone(camera.transform, this.transform);
 
@@ -70,13 +70,51 @@ export function setupCamera(viewer) {
 }
 
 export function flyCameraTo(viewer, {lon, lat, alt}) {
+	const camera = viewer.camera;
 	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
 
-	// 2. Using a HeadingPitchRange offset
-	const heading = Cesium.Math.toRadians(45.0);
-	const pitch = Cesium.Math.toRadians(-45.0);
-	const range = 500.0;
-	viewer.camera.lookAt(position, new Cesium.HeadingPitchRange(heading, pitch, range));
+	const heading = camera.heading;
+	const pitch = camera.pitch;
+	const roll = camera.roll;
+
+	const boundingSphere = new Cesium.BoundingSphere(position, 250);
+	camera.flyToBoundingSphere(boundingSphere, {
+		duration: 1000 / 1000,
+		offset: {
+			heading,
+			pitch,
+			roll,
+		},
+		complete: () => {
+			let {width, height} = getFrameSize(viewer);
+			width -= 450;
+			height *= 0.5;
+
+			const windowPosition = camera.pickEllipsoid(new Cesium.Cartesian2(width, height));
+			const boundingSphere = new Cesium.BoundingSphere(windowPosition, 250);
+
+			const heading = camera.heading;
+			const pitch = camera.pitch;
+			const roll = camera.roll;
+
+			camera.flyToBoundingSphere(boundingSphere, {
+				duration: 250 / 1000,
+				orientation: {
+					heading,
+					pitch,
+					roll,
+				}
+			});
+		}
+	});
+}
+
+function getFrameSize(viewer) {
+	const canvas = viewer.scene.canvas;
+	return {
+		width: canvas.width,
+		height: canvas.height,
+	}
 }
 
 function createCameraDebugTool(viewer) {
@@ -84,6 +122,7 @@ function createCameraDebugTool(viewer) {
 		const v = new StoredView();
 		console.log(v.save(viewer.camera));
 	};
+	window.saratov = viewer;
 }
 
 function setupController(viewer) {
