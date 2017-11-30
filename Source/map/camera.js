@@ -69,6 +69,16 @@ export function setupCamera(viewer) {
 	});
 }
 
+export function flyCameraTo(viewer, {lon, lat, alt}) {
+	const position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+
+	// 2. Using a HeadingPitchRange offset
+	const heading = Cesium.Math.toRadians(45.0);
+	const pitch = Cesium.Math.toRadians(-45.0);
+	const range = 500.0;
+	viewer.camera.lookAt(position, new Cesium.HeadingPitchRange(heading, pitch, range));
+}
+
 function createCameraDebugTool(viewer) {
 	window.cam = () => {
 		const v = new StoredView();

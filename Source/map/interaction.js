@@ -1,5 +1,6 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
+import {flyCameraTo} from './camera';
 import {isEmptyObject} from "../lib/utils";
 import {getAttributes as getAttrs} from "../map";
 
@@ -14,8 +15,14 @@ export function initInteraction(viewer) {
 	selectedFeatureSignal.on(attributes => {
 		if (!attributes) return;
 
-		const {systemCentroid: centroid} = attributes;
-		if (centroid) setCamera(viewer, centroid);
+		const {systemCentroid} = attributes;
+		if (systemCentroid) {
+			const centroid = {
+				...systemCentroid,
+				alt: 100,
+			};
+			flyCameraTo(viewer, centroid);
+		}
 	});
 }
 
@@ -157,14 +164,4 @@ function canSelectFeature(item) {
 
 	const attributes = getAttributes(item);
 	return !isEmptyObject(attributes);
-}
-
-function setCamera(viewer, {lon, lat}) {
-	const position = Cesium.Cartesian3.fromDegrees(lon, lat, 100.0);
-
-	// 2. Using a HeadingPitchRange offset
-	const heading = Cesium.Math.toRadians(45.0);
-	const pitch = Cesium.Math.toRadians(-45.0);
-	const range = 500.0;
-	viewer.camera.lookAt(position, new Cesium.HeadingPitchRange(heading, pitch, range));
 }
