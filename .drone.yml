@@ -5,7 +5,7 @@ pipeline:
       - npm install
       - npm run build
     when:
-      branch: master
+      branches: [master, dev]
 
   deploy:
       image: appleboy/drone-scp
