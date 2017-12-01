@@ -2,26 +2,24 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import connect from '../../decorators/connect';
 import {settingsSignal as signal} from '../../signals';
+import {setOptions, setQuality} from '../../lib/settings';
+import ViewportQuality from '../../models/ViewportQuality';
 
 @connect(
 	signal,
 	settings => {
 		return {
+			options: ViewportQuality.options,
 			shadows: settings.shadows,
-			quality: settings.quality,
+			qualityMode: settings.qualityMode,
 			onChangeShadow: value => {
-				signal.trigger({
-					...settings,
+				setOptions({
 					shadows: value,
 				});
 			},
 			onChangeQuality: event => {
-				const quality = event.target.value;
-
-				signal.trigger({
-					...settings,
-					quality,
-				});
+				const qualityMode = event.target.value;
+				setQuality(qualityMode);
 			},
 		};
 	},
@@ -30,7 +28,8 @@ import {settingsSignal as signal} from '../../signals';
 export default class Settings extends Component {
 	render() {
 		const {shadows, onChangeShadow} = this.props;
-		const {quality, onChangeQuality} = this.props;
+		const {qualityMode, onChangeQuality} = this.props;
+		const {options} = this.props;
 
 		return (
 			<div className={classNames('Settings', 'Block')}>
@@ -58,13 +57,9 @@ export default class Settings extends Component {
 
 					<SettingsItem>
 						<Select
-							value={quality}
+							value={qualityMode}
 							onChange={onChangeQuality}
-							options={[
-								{name: 'Высокое качество', value: 1.0},
-								{name: 'Среднее качество', value: 0.5},
-								{name: 'Низкое качество', value: 0.25},
-							]}
+							options={options}
 						/>
 					</SettingsItem>
 				</ul>
