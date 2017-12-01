@@ -85,27 +85,6 @@ export function flyCameraTo(viewer, {lon, lat, alt}) {
 			pitch,
 			roll,
 		},
-		complete: () => {
-			let {width, height} = getFrameSize(viewer);
-			width -= 450;
-			height *= 0.5;
-
-			const windowPosition = camera.pickEllipsoid(new Cesium.Cartesian2(width, height));
-			const boundingSphere = new Cesium.BoundingSphere(windowPosition, 250);
-
-			const heading = camera.heading;
-			const pitch = camera.pitch;
-			const roll = camera.roll;
-
-			camera.flyToBoundingSphere(boundingSphere, {
-				duration: 250 / 1000,
-				orientation: {
-					heading,
-					pitch,
-					roll,
-				}
-			});
-		}
 	});
 }
 
