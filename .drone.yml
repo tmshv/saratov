@@ -4,6 +4,8 @@ pipeline:
     commands:
       - npm install
       - npm run build
+    when:
+      branches: [master, dev]
 
   deploy:
       image: appleboy/drone-scp
@@ -13,4 +15,5 @@ pipeline:
       source: ./Build/*
       secrets: [scp_key]
       when:
+        branch: master
         status: success

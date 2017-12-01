@@ -6,22 +6,15 @@ import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadG
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
+import {setOptions, setDefaults, setQuality} from './lib/settings';
 import {selectedLayersSignal, settingsSignal} from './signals';
+import ViewportQuality from './models/ViewportQuality';
 
 const layers = [];
 
 const attributesMap = new Map();
 
 function setupApp(viewer) {
-	const devicePixelRatio = window.devicePixelRatio;
-
-	settingsSignal.trigger({
-		devicePixelRatio,
-		shadows: false,
-		quality: 0.5,
-		enableGlobalLighting: false,
-	});
-
 	settingsSignal.on(settings => {
 		// Cask shadows
 		viewer.shadows = settings.shadows;
@@ -34,6 +27,65 @@ function setupApp(viewer) {
 		const devicePixelRatio = settings.devicePixelRatio;
 		viewer.resolutionScale = devicePixelRatio * quality;
 	});
+}
+
+function setupAdaptiveQuality(viewer) {
+	let isAdaptive = false;
+	let userSettings = null;
+
+	settingsSignal.on(settings => {
+		const {qualityMode, adaptiveWorks} = settings;
+		if (qualityMode === ViewportQuality.ADAPTIVE && !isAdaptive) {
+			isAdaptive = true;
+
+			saveUserSettings(settings);
+			enableAdaptive();
+			setTimeout(setHigh, 0);
+		} else if (qualityMode !== ViewportQuality.ADAPTIVE && isAdaptive) {
+			isAdaptive = false;
+			disableAdaptive();
+		}
+
+		if (qualityMode === ViewportQuality.ADAPTIVE && !adaptiveWorks) {
+			saveUserSettings(settings);
+		}
+	});
+
+	function saveUserSettings(settings) {
+		userSettings = {
+			shadows: settings.shadows,
+		};
+	}
+
+	const setLow = () => {
+		setOptions({
+			quality: ViewportQuality.getCoef(ViewportQuality.LOW),
+			shadows: false,
+			adaptiveWorks: true,
+		});
+	};
+
+	const setHigh = () => {
+		setOptions({
+			...userSettings,
+			quality: ViewportQuality.getCoef(ViewportQuality.HIGH),
+			adaptiveWorks: false,
+		});
+	};
+
+	const camera = viewer.scene.camera;
+
+	function enableAdaptive() {
+		camera.moveStart.addEventListener(setLow);
+		camera.moveEnd.addEventListener(setHigh);
+	}
+
+	function disableAdaptive() {
+		camera.moveStart.removeEventListener(setLow);
+		camera.moveEnd.removeEventListener(setHigh);
+
+		setOptions(userSettings);
+	}
 }
 
 function setupTime(viewer) {
@@ -190,11 +242,13 @@ export function getAttributes() {
 export function initMap(viewer) {
 	setupTime(viewer);
 	setupCamera(viewer);
+	setupAdaptiveQuality(viewer);
 	loadImagery(viewer);
 	initInteraction(viewer);
 
 	setTimeout(() => {
 		setupApp(viewer);
+		setDefaults();
 	}, 10);
 
 	selectedLayersSignal.on(onSelectedLayersUpdate);

@@ -11,7 +11,7 @@ function t(key) {
 		: key;
 }
 
-const exists = value => value !== null && value !== undefined;
+const exists = value => value !== null && value !== undefined && value !== '-';
 
 function selectAttributes(names, attributes) {
 	return names.reduce((acc, x) => {
