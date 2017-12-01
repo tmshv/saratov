@@ -63,7 +63,7 @@ export default class Settings extends Component {
 							options={[
 								{name: 'Высокое качество', value: 1.0},
 								{name: 'Среднее качество', value: 0.5},
-								{name: 'Плохое качество', value: 0.25},
+								{name: 'Низкое качество', value: 0.25},
 							]}
 						/>
 					</SettingsItem>
