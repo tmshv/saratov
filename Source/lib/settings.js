@@ -34,7 +34,7 @@ export function setDefaults() {
 		devicePixelRatio,
 		shadows: false,
 		enableGlobalLighting: false,
-		qualityMode: ViewportQuality.MEDIUM,
-		quality: ViewportQuality.getCoef(ViewportQuality.MEDIUM),
+		qualityMode: ViewportQuality.ADAPTIVE,
+		quality: ViewportQuality.getCoef(ViewportQuality.ADAPTIVE),
 	});
 }

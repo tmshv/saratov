@@ -108,13 +108,13 @@ export const groups = [
 			"depth",
 			"angle lot",
 			"max_area",
+			"min_area",
 		]
 	},
 
 	{
 		"name": "ТРЕБОВАНИЯ К РАСПОЛОЖЕНИЮ ОБЪЕКТОВ НА УЧАСТКЕ",
 		"attributes": [
-			"min_area",
 			"lot_dencity",
 			"mm_dencity",
 			"green_dencity",
