@@ -162,7 +162,25 @@ function getUnit(name) {
 function createValue(name, value) {
 	if (name === 'colour') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
 	if (name === 'colour_start_floor') return <AttributeColorValue>{parseColor(value)}</AttributeColorValue>;
+
+	value = parseValue(name, value);
 	return <AttributeValue units={getUnit(name)}>{value}</AttributeValue>;
+}
+
+function parseValue(name, value) {
+	const attributesMultiplyCoefs = {
+		lot_dencity: 100,
+		mm_dencity: 100,
+		green_dencity: 100,
+		redline_dencity: 100,
+	};
+
+	if (attributesMultiplyCoefs.hasOwnProperty(name)) {
+		const x = attributesMultiplyCoefs[name];
+		return parseFloat(value) * x;
+	}
+
+	return value;
 }
 
 function parseColor(value) {
