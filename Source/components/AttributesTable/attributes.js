@@ -20,6 +20,8 @@ export const attributeTranslation = {
 	cap: "Уклон кровли здания, выходящего на уличный фронт (макс)",
 	cap_k: "Отступ плоскости верхних этажей от линии застройки, м / уклон угловой плоскости пространственного конверта",
 	glass_dencity: "Доля площади проемов к глухой поверхности стены (мин)",
+	glass_dencity_a: "Доля площади проемов к глухой поверхности стены (мин)",
+	glass_dencity_b: "Доля площади проемов к глухой поверхности стены (макс)",
 	window_prportion: "Пропорции окон (высота к ширине)*",
 	wall_width: "Ширина простенка (макс)",
 	window_height: "Высота окна (макс)",
@@ -68,6 +70,8 @@ export const attributeUnits = {
 	cap: "°",
 	cap_k: "°",
 	glass_dencity: "%",
+	glass_dencity_a: "%",
+	glass_dencity_b: "%",
 	wall_width: "м",
 	window_height: "м",
 	window_step: "м*",
@@ -122,17 +126,18 @@ export const groups = [
 			"redline_dencity",
 			"redline_facade",
 			"min_dist_car",
+			"utilities_max_dist",
 		]
 	},
 
 	{
 		"name": "ТРЕБОВАНИЯ К ОБЪЕМНО-ПРОСТРАНСТВЕННЫМ ХАРАКТЕРИСТИКАМ ЗАСТРОЙКИ",
 		"attributes": [
-			"utilities_max_dist",
 			"height",
 			"street_height",
 			"cap_type",
 			"cap",
+			"cap_k",
 		]
 	},
 
@@ -140,8 +145,8 @@ export const groups = [
 		"name": "ТРЕБОВАНИЯ К ФАСАДАМ ЗДАНИЙ, ВЫХОДЯЩИМ НА УЛИЧНЫЙ ФРОНТ (КРОМЕ ПЕРВОГО ЭТАЖА)",
 		"footnote": "* неприменимо для индивидуальных жилых домов",
 		"attributes": [
-			"cap_k",
-			"glass_dencity",
+			"glass_dencity_a",
+			"glass_dencity_b",
 			"window_prportion",
 			"wall_width",
 			"window_height",
@@ -152,7 +157,6 @@ export const groups = [
 			"consol_area",
 			"facade_area",
 			"colour",
-			"material",
 		]
 	},
 
