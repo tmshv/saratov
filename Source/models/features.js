@@ -5,6 +5,7 @@ import {getAttributes as getAttrs} from "../map";
 export class FeatureCollection {
 	constructor() {
 		this.attributesMap = new Map();
+		this.featurePolylines = new Map();
 	}
 
 	getAttributes() {
@@ -23,6 +24,14 @@ export class FeatureCollection {
 		});
 
 		window.saratovAttributes = this.getAttributes();
+	}
+
+	addFeaturePolyline(entity) {
+		this.featurePolylines.set(entity.name, entity);
+	}
+
+	getFeaturePolyline(entity) {
+		return this.featurePolylines.get(entity.name);
 	}
 }
 

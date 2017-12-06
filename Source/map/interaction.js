@@ -2,6 +2,7 @@ import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
 import {flyCameraTo} from './camera';
 import {getAttributes, getFeature} from '../models/features';
+import featureCollection from "../models/features";
 
 const Cesium3DTileFeature = Cesium.Cesium3DTileFeature;
 
@@ -12,6 +13,7 @@ export function initInteraction(viewer) {
 	viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 	initFeatureSelection(viewer);
+	initPolylineHighlighting();
 
 	selectedFeatureSignal.on(attributes => {
 		if (!attributes) return;
@@ -23,6 +25,22 @@ export function initInteraction(viewer) {
 				alt: 100,
 			};
 			flyCameraTo(viewer, centroid);
+		}
+	});
+}
+
+function initPolylineHighlighting() {
+	let highlighted;
+
+	highlightFeatureSignal.on(feature => {
+		if (highlighted) highlighted.show = false;
+		if (!feature) return;
+
+		const entity = featureCollection.getFeaturePolyline(feature);
+
+		if (entity) {
+			highlighted = entity;
+			entity.show = true;
 		}
 	});
 }
