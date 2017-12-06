@@ -1,7 +1,6 @@
 import Cesium from 'cesium/Cesium';
 
 import {load3dTiles} from './map/load3dTiles';
-import {create3dTilesStyle} from './map/tileStyle';
 import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
@@ -160,7 +159,10 @@ function loadConfig(url) {
 					};
 				})
 		})
-		.catch(e => getDefaultConfig());
+		.catch(e => {
+			console.error(e);
+			return getDefaultConfig();
+		});
 }
 
 function toggleLayer(type, value) {
@@ -211,6 +213,10 @@ function loadData(viewer, params) {
 			promise = loadJson(url);
 			break;
 		}
+
+		default: {
+			return null;
+		}
 	}
 
 	return promise
@@ -250,6 +256,9 @@ export function initMap(viewer) {
 				}))
 				.map(options => loadData(viewer, options))
 			);
+		})
+		.then(items => {
+			return items.filter(Boolean);
 		})
 		.then(items => {
 			const attributes = items.filter(x => x.contentType === CONTENT_TYPE_ATTRIBUTES);
