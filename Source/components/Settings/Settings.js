@@ -2,19 +2,26 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import connect from '../../decorators/connect';
 import {settingsSignal as signal} from '../../signals';
-import {setOptions, setQuality} from '../../lib/settings';
+import {setOptions, setQuality, getSettings} from '../../lib/settings';
 import ViewportQuality from '../../models/ViewportQuality';
 
 @connect(
-	signal,
-	settings => {
+	null,
+	() => {
+		const settings = getSettings();
 		return {
 			options: ViewportQuality.options,
-			shadows: settings.shadows,
+			shadows: Boolean(settings.shadows),
+			blurredBackground: Boolean(settings.blurredBackground),
 			qualityMode: settings.qualityMode,
 			onChangeShadow: value => {
 				setOptions({
 					shadows: value,
+				});
+			},
+			onChangeBlurredBackground: value => {
+				setOptions({
+					blurredBackground: value,
 				});
 			},
 			onChangeQuality: event => {
@@ -22,12 +29,12 @@ import ViewportQuality from '../../models/ViewportQuality';
 				setQuality(qualityMode);
 			},
 		};
-	},
-	true,
+	}
 )
 export default class Settings extends Component {
 	render() {
 		const {shadows, onChangeShadow} = this.props;
+		const {blurredBackground, onChangeBlurredBackground} = this.props;
 		const {qualityMode, onChangeQuality} = this.props;
 		const {options} = this.props;
 
@@ -47,9 +54,10 @@ export default class Settings extends Component {
 
 					<SettingsItem>
 						<Checkbox
-							checked={true}
-							enabled={false}
-							onChange={() => {}}
+							checked={blurredBackground}
+							onChange={() => {
+								onChangeBlurredBackground(!blurredBackground);
+							}}
 						>
 							Размытый фон
 						</Checkbox>

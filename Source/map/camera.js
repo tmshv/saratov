@@ -77,7 +77,7 @@ export function flyCameraTo(viewer, {lon, lat, alt}) {
 	const pitch = camera.pitch;
 	const roll = camera.roll;
 
-	const boundingSphere = new Cesium.BoundingSphere(position, 250);
+	const boundingSphere = new Cesium.BoundingSphere(position, 150);
 	camera.flyToBoundingSphere(boundingSphere, {
 		duration: 1000 / 1000,
 		offset: {

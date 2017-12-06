@@ -1,8 +1,10 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
 import {flyCameraTo} from './camera';
-import {isEmptyObject} from "../lib/utils";
-import {getAttributes as getAttrs} from "../map";
+import {getAttributes, getFeature} from '../models/features';
+import featureCollection from "../models/features";
+
+const Cesium3DTileFeature = Cesium.Cesium3DTileFeature;
 
 const hoverColor = new Cesium.Color(1, 1, 1, .5); // White
 const selectColor = new Cesium.Color(1, 1, 1, .45); // White
@@ -11,6 +13,7 @@ export function initInteraction(viewer) {
 	viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
 
 	initFeatureSelection(viewer);
+	initPolylineHighlighting();
 
 	selectedFeatureSignal.on(attributes => {
 		if (!attributes) return;
@@ -22,6 +25,22 @@ export function initInteraction(viewer) {
 				alt: 100,
 			};
 			flyCameraTo(viewer, centroid);
+		}
+	});
+}
+
+function initPolylineHighlighting() {
+	let highlighted;
+
+	highlightFeatureSignal.on(feature => {
+		if (highlighted) highlighted.show = false;
+		if (!feature) return;
+
+		const entity = featureCollection.getFeaturePolyline(feature);
+
+		if (entity) {
+			highlighted = entity;
+			entity.show = true;
 		}
 	});
 }
@@ -115,53 +134,8 @@ function highlightFeature(item) {
 	highlightFeatureSignal.trigger(feature);
 }
 
-function getAttributes(item) {
-	if (item.id) {
-		const a = getGeojsonAttributes(item);
-		const attrs = getAttrs();
-
-		return attrs.get(a.name);
-	}
-	// if (item.content) return get3dTilesAttributes(item);
-
-	return null;
-}
-
-function getGeojsonAttributes(item) {
-	const feature = item.id;
-
-	const props = feature.properties;
-	// return props.getValue();
-	const attributeNames = props.propertyNames;
-	return attributeNames.reduce((acc, x) => ({
-		...acc,
-		[x]: props[x].getValue(),
-	}), {});
-}
-
-function get3dTilesAttributes(item) {
-	const feature = item.content.getFeature(0);
-	const attributeNames = feature.getPropertyNames();
-	const attributes = attributeNames.reduce((acc, x) => ({
-		...acc,
-		[x]: feature.getProperty(x),
-	}), {});
-
-	if (isEmptyObject(attributes)) return null;
-	return attributes;
-}
-
-function getFeature(item) {
-	if (!item) return null;
-	if (item.id) return item.id;
-
-	if (!item.content) return null; // item is not 3d tile
-	return item.content.getFeature(0);
-}
-
-function canSelectFeature(item) {
-	if (!item.id) return false; // item is not Entity
-
-	const attributes = getAttributes(item);
-	return !isEmptyObject(attributes);
+export function canSelectFeature(feature) {
+	if (!feature) return false;
+	if (feature instanceof Cesium3DTileFeature) return false;
+	else return true;
 }

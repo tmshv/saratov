@@ -1,18 +1,17 @@
 import Cesium from 'cesium/Cesium';
 
 import {load3dTiles} from './map/load3dTiles';
-import {create3dTilesStyle} from './map/tileStyle';
-import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
+import {loadGeojson, loadGeojsonConverts, loadGeojsonPublicSpaces, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {setOptions, setDefaults, setQuality} from './lib/settings';
 import {selectedLayersSignal, settingsSignal} from './signals';
 import ViewportQuality from './models/ViewportQuality';
+import featureCollection from './models/features';
+import {join} from "./lib/fn";
 
 const layers = [];
-
-const attributesMap = new Map();
 
 function setupApp(viewer) {
 	settingsSignal.on(settings => {
@@ -130,10 +129,6 @@ export function getDefaultConfig() {
 	}
 }
 
-function join(lists) {
-	return lists.reduce((acc, x) => [...acc, ...x], []);
-}
-
 function loadJson(url) {
 	return fetch(url)
 		.then(x => x.json())
@@ -164,7 +159,10 @@ function loadConfig(url) {
 					};
 				})
 		})
-		.catch(e => getDefaultConfig());
+		.catch(e => {
+			console.error(e);
+			return getDefaultConfig();
+		});
 }
 
 function toggleLayer(type, value) {
@@ -182,9 +180,9 @@ function onSelectedLayersUpdate(layers) {
 	})
 }
 
-const LAYER_BUILDINGS = 'buildings';
-const LAYER_CONVERT = 'convert';
-const LAYER_GREEN = 'green';
+const TYPE_BUILDINGS = 'buildings';
+const TYPE_CONVERT = 'convert';
+const TYPE_PUBLIC_SPACE = 'publicSpace';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
@@ -202,12 +200,11 @@ function loadData(viewer, params) {
 		}
 
 		case CONTENT_TYPE_GEOJSON: {
-			const options = params.options
-				? parseGeojsonOptions(params.options)
-				: {};
-			promise = type === 'convert'
-				? loadGeojsonConverts(viewer, url, params)
-				: loadGeojson(viewer, url, options);
+			if (type === TYPE_CONVERT) {
+				promise = loadGeojsonConverts(viewer, url, params);
+			} else if (type === TYPE_PUBLIC_SPACE) {
+				promise = loadGeojsonPublicSpaces(viewer, url, params);
+			}
 			break;
 		}
 
@@ -217,7 +214,9 @@ function loadData(viewer, params) {
 		}
 	}
 
-	return promise
+	return !promise
+		? null
+		: promise
 		.then(data => ({
 			data,
 			type,
@@ -225,31 +224,17 @@ function loadData(viewer, params) {
 		}));
 }
 
-function saveAttributes(items) {
-	items = join(items);
-	items.forEach(x => {
-		const name = x.systemName;
-		attributesMap.set(name, x);
-	});
-
-	window.saratovAttributes = getAttributes();
-}
-
 export function getAttributes() {
-	return attributesMap;
+	return featureCollection.getAttributes();
 }
 
 export function initMap(viewer) {
+	setupApp(viewer);
 	setupTime(viewer);
 	setupCamera(viewer);
 	setupAdaptiveQuality(viewer);
 	loadImagery(viewer);
 	initInteraction(viewer);
-
-	setTimeout(() => {
-		setupApp(viewer);
-		setDefaults();
-	}, 10);
 
 	selectedLayersSignal.on(onSelectedLayersUpdate);
 
@@ -266,8 +251,11 @@ export function initMap(viewer) {
 			);
 		})
 		.then(items => {
+			return items.filter(Boolean);
+		})
+		.then(items => {
 			const attributes = items.filter(x => x.contentType === CONTENT_TYPE_ATTRIBUTES);
-			saveAttributes(attributes.map(x => x.data));
+			featureCollection.saveAttributes(attributes.map(x => x.data));
 
 			return items.filter(x => x.contentType !== CONTENT_TYPE_ATTRIBUTES);
 		})
@@ -278,9 +266,9 @@ export function initMap(viewer) {
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: true},
-				{name: 'Пространственные конверты', type: LAYER_CONVERT, checked: true},
-				{name: 'Участки озеленения', type: LAYER_GREEN, checked: true},
+				{name: 'Существующая застройка', type: TYPE_BUILDINGS, checked: true},
+				{name: 'Пространственные конверты', type: TYPE_CONVERT, checked: true},
+				{name: 'Участки озеленения', type: TYPE_PUBLIC_SPACE, checked: true},
 			]);
 		})
 

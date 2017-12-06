@@ -41,6 +41,12 @@ export const Background = ({children}) => (
 	</div>
 );
 
+export const BlackOpacityBlock = ({children}) => (
+	<div className="BlackOpacityBlock">
+		{children}
+	</div>
+);
+
 export class BlurBlock extends Component {
 	constructor(props) {
 		super(props);
