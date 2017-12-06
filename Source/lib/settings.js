@@ -7,13 +7,19 @@ settingsSignal.on(settings => {
 	currentSettings = settings;
 });
 
+export function getSettings() {
+	return {
+		...currentSettings,
+	}
+}
+
 export function setOptions(partialState) {
-	currentSettings = {
+	const settings = {
 		...currentSettings,
 		...partialState,
 	};
 
-	settingsSignal.trigger(currentSettings);
+	settingsSignal.trigger(settings);
 }
 
 export function setQuality(qualityMode, overrideQuality = null) {
@@ -32,6 +38,7 @@ export function setDefaults() {
 
 	setOptions({
 		devicePixelRatio,
+		blurredBackground: true,
 		shadows: false,
 		enableGlobalLighting: false,
 		qualityMode: ViewportQuality.ADAPTIVE,

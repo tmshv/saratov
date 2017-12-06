@@ -232,16 +232,12 @@ export function getAttributes() {
 }
 
 export function initMap(viewer) {
+	setupApp(viewer);
 	setupTime(viewer);
 	setupCamera(viewer);
 	setupAdaptiveQuality(viewer);
 	loadImagery(viewer);
 	initInteraction(viewer);
-
-	setTimeout(() => {
-		setupApp(viewer);
-		setDefaults();
-	}, 10);
 
 	selectedLayersSignal.on(onSelectedLayersUpdate);
 

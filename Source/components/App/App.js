@@ -7,8 +7,8 @@ import Legend from '../Legend';
 import ZoomControl from '../ZoomControl';
 import ATBlock from '../ATBlock';
 import connect from '../../decorators/connect';
-import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal} from '../../signals';
-import {Float, BlurBlock} from '../';
+import {selectedFeatureSignal, highlightFeatureSignal, canvasSignal, settingsSignal} from '../../signals';
+import {Float, BlurBlock, BlackOpacityBlock} from '../index';
 import Settings from '../Settings';
 
 @connect(
@@ -31,10 +31,28 @@ import Settings from '../Settings';
 		},
 	})
 )
+@connect(
+	settingsSignal,
+	(settings = {}) => {
+		return {
+			useBlur: Boolean(settings.blurredBackground),
+		};
+	},
+)
 export default class App extends Component {
 	render() {
-		const {attributes, canInteract, onCanvasRender} = this.props;
+		const {attributes, useBlur, canInteract} = this.props;
+		// const {attributes, canInteract} = this.props;
 		const borderRadius = '2px';
+
+		// const useBlur = true;
+		const Block = useBlur
+			? BlurBlock
+			: BlackOpacityBlock;
+
+		const onCanvasRender = useBlur
+			? this.props.onCanvasRender
+			: null;
 
 		return (
 			<div className='App'>
@@ -46,42 +64,42 @@ export default class App extends Component {
 				/>
 
 				<Float top={0} left={0}>
-					<BlurBlock>
+					<Block>
 						<div className={classNames('Logo', 'Block')}>
 							<h1>
 								ОБЪЕМНО-ПРОСТРАНСТВЕННЫЙ РЕГЛАМЕНТ НА ТЕСТОВУЮ ТЕРРИТОРИЮ Г. САРАТОВА
 							</h1>
 						</div>
-					</BlurBlock>
+					</Block>
 				</Float>
 
 				<Float top={50} left={10}>
-					<BlurBlock style={{
+					<Block style={{
 						borderRadius,
 					}}>
 						<ZoomControl/>
-					</BlurBlock>
+					</Block>
 				</Float>
 
 				<Float bottom={0} left={0}>
-					<BlurBlock>
+					<Block>
 						<Legend/>
-					</BlurBlock>
+					</Block>
 				</Float>
 
 				<Float bottom={50} left={10}>
-					<BlurBlock style={{
+					<Block style={{
 						borderRadius,
 					}}>
 						<Settings/>
-					</BlurBlock>
+					</Block>
 				</Float>
 
 				{!attributes ? null : (
 					<Float top={10} right={10}>
-						<BlurBlock>
+						<Block>
 							<ATBlock attributes={attributes}/>
-						</BlurBlock>
+						</Block>
 					</Float>
 				)}
 			</div>

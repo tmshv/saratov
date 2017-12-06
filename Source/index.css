@@ -275,3 +275,7 @@ ul {
 .ZoomControlButton:last-child {
     margin-right: 0;
 }
+
+.BlackOpacityBlock {
+    background: rgba(0, 0, 0, 0.7);
+}
