@@ -1,7 +1,7 @@
 import Cesium from 'cesium/Cesium';
 
 import {load3dTiles} from './map/load3dTiles';
-import {loadGeojson, loadGeojsonConverts, parseGeojsonOptions} from './map/loadGeojson';
+import {loadGeojson, loadGeojsonConverts, loadGeojsonPublicSpaces, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
@@ -180,9 +180,9 @@ function onSelectedLayersUpdate(layers) {
 	})
 }
 
-const LAYER_BUILDINGS = 'buildings';
-const LAYER_CONVERT = 'convert';
-const LAYER_GREEN = 'publicSpaces';
+const TYPE_BUILDINGS = 'buildings';
+const TYPE_CONVERT = 'convert';
+const TYPE_PUBLIC_SPACE = 'publicSpace';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
@@ -200,12 +200,11 @@ function loadData(viewer, params) {
 		}
 
 		case CONTENT_TYPE_GEOJSON: {
-			const options = params.options
-				? parseGeojsonOptions(params.options)
-				: {};
-			promise = type === 'convert'
-				? loadGeojsonConverts(viewer, url, params)
-				: loadGeojson(viewer, url, options);
+			if (type === TYPE_CONVERT) {
+				promise = loadGeojsonConverts(viewer, url, params);
+			} else if (type === TYPE_PUBLIC_SPACE) {
+				promise = loadGeojsonPublicSpaces(viewer, url, params);
+			}
 			break;
 		}
 
@@ -213,13 +212,11 @@ function loadData(viewer, params) {
 			promise = loadJson(url);
 			break;
 		}
-
-		default: {
-			return null;
-		}
 	}
 
-	return promise
+	return !promise
+		? null
+		: promise
 		.then(data => ({
 			data,
 			type,
@@ -269,9 +266,9 @@ export function initMap(viewer) {
 		})
 		.then(() => {
 			selectedLayersSignal.trigger([
-				{name: 'Существующая застройка', type: LAYER_BUILDINGS, checked: true},
-				{name: 'Пространственные конверты', type: LAYER_CONVERT, checked: true},
-				{name: 'Участки озеленения', type: LAYER_GREEN, checked: true},
+				{name: 'Существующая застройка', type: TYPE_BUILDINGS, checked: true},
+				{name: 'Пространственные конверты', type: TYPE_CONVERT, checked: true},
+				{name: 'Участки озеленения', type: TYPE_PUBLIC_SPACE, checked: true},
 			]);
 		})
 

@@ -1,5 +1,6 @@
 import Cesium from 'cesium/Cesium';
 import {getZoneColor} from '../models/zones';
+import {ZONE_PUBLIC_SPACE} from '../models/zones';
 import featureCollection from '../models/features';
 
 function createColor(hex, alpha) {
@@ -121,6 +122,53 @@ export function loadGeojsonConverts(viewer, url, options) {
 				geom.outline = false;
 
 				if (!isZone) {
+					featureCollection.addFeaturePolyline(entity);
+					entity.show = false;
+				}
+			});
+
+			return dataSource;
+		})
+		.then(dataSource => {
+			viewer.dataSources.add(dataSource);
+
+			dataSource.show = false;
+			return dataSource;
+		});
+}
+
+function getPublicSpaceColor({alpha}) {
+	const hex = getZoneColor(ZONE_PUBLIC_SPACE, '#ff00ff');
+	return getColor(hex, alpha);
+}
+
+export function loadGeojsonPublicSpaces(viewer, url, options) {
+	const geojsonOptions = {
+		clampToGround: false,
+		strokeWidth: 2,
+	};
+
+	return Cesium.GeoJsonDataSource
+		.load(url, geojsonOptions)
+		.then(dataSource => {
+			dataSource.entities.values.forEach(entity => {
+				let isArea;
+				let geom;
+
+				if (entity.polygon) {
+					geom = entity.polygon;
+					isArea = true;
+				} else if (entity.polyline) {
+					geom = entity.polyline;
+					isArea = false;
+				} else {
+					return;
+				}
+
+				geom.material = getPublicSpaceColor(options);
+				geom.outline = false;
+
+				if (!isArea) {
 					featureCollection.addFeaturePolyline(entity);
 					entity.show = false;
 				}
