@@ -4,6 +4,8 @@ import {flyCameraTo} from './camera';
 import {isEmptyObject} from "../lib/utils";
 import {getAttributes as getAttrs} from "../map";
 
+const Cesium3DTileFeature = Cesium.Cesium3DTileFeature;
+
 const hoverColor = new Cesium.Color(1, 1, 1, .5); // White
 const selectColor = new Cesium.Color(1, 1, 1, .45); // White
 
@@ -159,9 +161,8 @@ function getFeature(item) {
 	return item.content.getFeature(0);
 }
 
-function canSelectFeature(item) {
-	if (!item.id) return false; // item is not Entity
-
-	const attributes = getAttributes(item);
-	return !isEmptyObject(attributes);
+export function canSelectFeature(feature) {
+	if (!feature) return false;
+	if (feature instanceof Cesium3DTileFeature) return false;
+	else return true;
 }

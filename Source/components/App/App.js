@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import Map from '../Map';
 import {initMap, getDefaultViewerOptions} from '../../map';
+import {canSelectFeature} from '../../map/interaction';
 import Legend from '../Legend';
 import ZoomControl from '../ZoomControl';
 import ATBlock from '../ATBlock';
@@ -13,7 +14,7 @@ import Settings from '../Settings';
 @connect(
 	highlightFeatureSignal,
 	data => ({
-		canInteract: Boolean(data),
+		canInteract: canSelectFeature(data),
 	})
 )
 @connect(
