@@ -32,7 +32,7 @@ def run(filename, parts):
 
 		i += 1
 
-		out = json.dumps(j, indent=4, ensure_ascii=False)
+		out = json.dumps(j, indent=None, ensure_ascii=False)
 		with open(new_filename, 'w') as f:
 			f.write(out)
 
