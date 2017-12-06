@@ -9,10 +9,10 @@ import {setupCamera} from './map/camera';
 import {setOptions, setDefaults, setQuality} from './lib/settings';
 import {selectedLayersSignal, settingsSignal} from './signals';
 import ViewportQuality from './models/ViewportQuality';
+import featureCollection from './models/features';
+import {join} from "./lib/fn";
 
 const layers = [];
-
-const attributesMap = new Map();
 
 function setupApp(viewer) {
 	settingsSignal.on(settings => {
@@ -130,10 +130,6 @@ export function getDefaultConfig() {
 	}
 }
 
-function join(lists) {
-	return lists.reduce((acc, x) => [...acc, ...x], []);
-}
-
 function loadJson(url) {
 	return fetch(url)
 		.then(x => x.json())
@@ -225,18 +221,8 @@ function loadData(viewer, params) {
 		}));
 }
 
-function saveAttributes(items) {
-	items = join(items);
-	items.forEach(x => {
-		const name = x.systemName;
-		attributesMap.set(name, x);
-	});
-
-	window.saratovAttributes = getAttributes();
-}
-
 export function getAttributes() {
-	return attributesMap;
+	return featureCollection.getAttributes();
 }
 
 export function initMap(viewer) {
@@ -267,7 +253,7 @@ export function initMap(viewer) {
 		})
 		.then(items => {
 			const attributes = items.filter(x => x.contentType === CONTENT_TYPE_ATTRIBUTES);
-			saveAttributes(attributes.map(x => x.data));
+			featureCollection.saveAttributes(attributes.map(x => x.data));
 
 			return items.filter(x => x.contentType !== CONTENT_TYPE_ATTRIBUTES);
 		})

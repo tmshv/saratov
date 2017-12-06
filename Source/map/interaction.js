@@ -1,8 +1,7 @@
 import Cesium from 'cesium/Cesium';
 import {selectedFeatureSignal, highlightFeatureSignal} from '../signals';
 import {flyCameraTo} from './camera';
-import {isEmptyObject} from "../lib/utils";
-import {getAttributes as getAttrs} from "../map";
+import {getAttributes, getFeature} from '../models/features';
 
 const Cesium3DTileFeature = Cesium.Cesium3DTileFeature;
 
@@ -115,50 +114,6 @@ function selectFeature(item) {
 function highlightFeature(item) {
 	const feature = getFeature(item);
 	highlightFeatureSignal.trigger(feature);
-}
-
-function getAttributes(item) {
-	if (item.id) {
-		const a = getGeojsonAttributes(item);
-		const attrs = getAttrs();
-
-		return attrs.get(a.name);
-	}
-	// if (item.content) return get3dTilesAttributes(item);
-
-	return null;
-}
-
-function getGeojsonAttributes(item) {
-	const feature = item.id;
-
-	const props = feature.properties;
-	// return props.getValue();
-	const attributeNames = props.propertyNames;
-	return attributeNames.reduce((acc, x) => ({
-		...acc,
-		[x]: props[x].getValue(),
-	}), {});
-}
-
-function get3dTilesAttributes(item) {
-	const feature = item.content.getFeature(0);
-	const attributeNames = feature.getPropertyNames();
-	const attributes = attributeNames.reduce((acc, x) => ({
-		...acc,
-		[x]: feature.getProperty(x),
-	}), {});
-
-	if (isEmptyObject(attributes)) return null;
-	return attributes;
-}
-
-function getFeature(item) {
-	if (!item) return null;
-	if (item.id) return item.id;
-
-	if (!item.content) return null; // item is not 3d tile
-	return item.content.getFeature(0);
 }
 
 export function canSelectFeature(feature) {
