@@ -8,7 +8,7 @@ function color(hex, alpha) {
 
 export function load3dTiles(viewer, url, type) {
 	if (type === 'convert') return loadConverts(viewer, url);
-	if (type === 'green') return loadPublicSpaces(viewer, url);
+	if (type === 'publicSpaces') return loadPublicSpaces(viewer, url);
 
 	const tileset = createTileset(viewer, url);
 	tileset.style = createDefault3dTilesStyle();

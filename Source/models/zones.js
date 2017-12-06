@@ -1,3 +1,5 @@
+export const ZONE_PUBLIC_SPACE = 'zone_public_space';
+
 export const zones = [
 	{
 		name: 'Зона И1',
@@ -32,6 +34,7 @@ export const zones = [
 	{
 		name: 'Зона ОП',
 		color: '#00b26b',
+		zoneName: ZONE_PUBLIC_SPACE,
 	},
 	{
 		name: 'ОКН',

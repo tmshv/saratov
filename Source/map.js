@@ -184,7 +184,7 @@ function onSelectedLayersUpdate(layers) {
 
 const LAYER_BUILDINGS = 'buildings';
 const LAYER_CONVERT = 'convert';
-const LAYER_GREEN = 'green';
+const LAYER_GREEN = 'publicSpaces';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
