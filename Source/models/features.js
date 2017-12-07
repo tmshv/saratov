@@ -1,6 +1,7 @@
 import {join} from '../lib/fn';
 import {isEmptyObject} from "../lib/utils";
 import {getAttributes as getAttrs} from "../map";
+import {project3857to4326} from "../lib/geo";
 
 export class FeatureCollection {
 	constructor() {
@@ -38,9 +39,27 @@ export class FeatureCollection {
 export function getAttributes(item) {
 	if (item.id) {
 		const a = getGeojsonAttributes(item);
-		const attrs = getAttrs();
+		const zone = a.zone;
 
-		return attrs.get(a.name);
+		if (['zone_okn', 'zone_op'].includes(zone)) {
+			const centroid = project3857to4326(
+				parseFloat(a.centroidLat),
+				parseFloat(a.centroidLon),
+			);
+
+			const text = {
+				zone_okn: 'Участок ОКН',
+				zone_op: 'Участок ОП',
+			};
+
+			return {
+				status: text[zone],
+				systemCentroid: centroid,
+			}
+		} else {
+			const attrs = getAttrs();
+			return attrs.get(a.name);
+		}
 	}
 	// if (item.content) return get3dTilesAttributes(item);
 
