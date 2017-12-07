@@ -53,6 +53,7 @@ export function getAttributes(item) {
 			};
 
 			return {
+				...a,
 				status: text[zone],
 				systemCentroid: centroid,
 			}
