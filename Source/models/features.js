@@ -39,22 +39,23 @@ export class FeatureCollection {
 export function getAttributes(item) {
 	if (item.id) {
 		const a = getGeojsonAttributes(item);
-		const zone = a.zone;
+		const status = a.status;
 
-		if (['zone_okn', 'zone_op'].includes(zone)) {
+		// TODO: remove this shit
+		if (['lot_okn', 'zone_op'].includes(status)) {
 			const centroid = project3857to4326(
 				parseFloat(a.centroidLat),
 				parseFloat(a.centroidLon),
 			);
 
 			const text = {
-				zone_okn: 'Участок ОКН',
+				lot_okn: 'Участок ОКН',
 				zone_op: 'Участок ОП',
 			};
 
 			return {
 				...a,
-				status: text[zone],
+				status: text[status],
 				systemCentroid: centroid,
 			}
 		} else {
