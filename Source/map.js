@@ -231,6 +231,9 @@ export function getAttributes() {
 }
 
 export function initMap(viewer) {
+	const shadowMap = viewer.shadowMap;
+	shadowMap.darkness = 0.4;
+
 	setupApp(viewer);
 	setupTime(viewer);
 	setupCamera(viewer);
