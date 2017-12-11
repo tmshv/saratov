@@ -13,7 +13,7 @@ export const zones = [
 	},
 	{
 		name: 'Зона И3',
-		color: '#ffa1a1',
+		color: '#ffcccc',
 		zoneName: 'zone_h3',
 	},
 	{
