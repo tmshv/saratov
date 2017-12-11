@@ -204,6 +204,8 @@ function loadData(viewer, params) {
 				promise = loadGeojsonConverts(viewer, url, params);
 			} else if (type === TYPE_PUBLIC_SPACE) {
 				promise = loadGeojsonPublicSpaces(viewer, url, params);
+			} else {
+				promise = loadGeojson(viewer, url, parseGeojsonOptions(params));
 			}
 			break;
 		}
