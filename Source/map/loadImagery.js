@@ -3,10 +3,12 @@ import Cesium from 'cesium/Cesium';
 export function loadBingImagery(viewer) {
 	Cesium.BingMapsApi.defaultKey = 'AihaXS6TtE_olKOVdtkMenAMq1L5nDlnU69mRtNisz1vZavr1HhdqGRNkB2Bcqvs'; // For use with this application only
 
-	viewer.imageryLayers.addImageryProvider(new Cesium.BingMapsImageryProvider({
+	const provider = new Cesium.BingMapsImageryProvider({
 		url: 'https://dev.virtualearth.net',
 		mapStyle: Cesium.BingMapsStyle.AERIAL // Can also use Cesium.BingMapsStyle.ROAD
-	}));
+	});
+	provider.defaultContrast = 1.5;
+	viewer.imageryLayers.addImageryProvider(provider);
 
 	return viewer;
 }

@@ -204,6 +204,8 @@ function loadData(viewer, params) {
 				promise = loadGeojsonConverts(viewer, url, params);
 			} else if (type === TYPE_PUBLIC_SPACE) {
 				promise = loadGeojsonPublicSpaces(viewer, url, params);
+			} else {
+				promise = loadGeojson(viewer, url, parseGeojsonOptions(params));
 			}
 			break;
 		}
@@ -229,6 +231,9 @@ export function getAttributes() {
 }
 
 export function initMap(viewer) {
+	const shadowMap = viewer.shadowMap;
+	shadowMap.darkness = 0.4;
+
 	setupApp(viewer);
 	setupTime(viewer);
 	setupCamera(viewer);
