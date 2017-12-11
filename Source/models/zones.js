@@ -40,6 +40,14 @@ export const zones = [
 		name: 'ОКН',
 		color: '#ffffff',
 	},
+	{
+		name: 'Граница тестовой территории',
+		color: '#005baa',
+		legend: {
+			theme: 'stroke',
+			strokeWidth: 3,
+		}
+	}
 ];
 
 export function getZoneColor(name, defaultValue) {
