@@ -18,17 +18,17 @@ export const zones = [
 	},
 	{
 		name: 'Зона ИТ1',
-		color: '#004978',
+		color: '#003e73',
 		zoneName: 'zone_ht1',
 	},
 	{
 		name: 'Зона ИТ2',
-		color: '#246DAC',
+		color: '#2878bf',
 		zoneName: 'zone_ht2',
 	},
 	{
 		name: 'Зона ИТ3',
-		color: '#77ABEE',
+		color: '#87beed',
 		zoneName: 'zone_ht3',
 	},
 	{
