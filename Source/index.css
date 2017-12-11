@@ -212,8 +212,6 @@ ul {
     overflow: hidden;
     font-family: sans-serif;
     background: #000;
-
-    filter: contrast(125%);
 }
 
 .Map--interactive {
