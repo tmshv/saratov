@@ -10,6 +10,7 @@ import {selectedLayersSignal, settingsSignal} from './signals';
 import ViewportQuality from './models/ViewportQuality';
 import featureCollection from './models/features';
 import {join} from "./lib/fn";
+import {loadGltf} from './map/model';
 
 const layers = [];
 
@@ -186,6 +187,7 @@ const TYPE_PUBLIC_SPACE = 'publicSpace';
 
 const CONTENT_TYPE_3D_TILES = '3d-tiles';
 const CONTENT_TYPE_GEOJSON = 'geojson';
+const CONTENT_TYPE_GLTF = 'gltf';
 const CONTENT_TYPE_ATTRIBUTES = 'attributes';
 
 function loadData(viewer, params) {
@@ -212,6 +214,11 @@ function loadData(viewer, params) {
 
 		case CONTENT_TYPE_ATTRIBUTES: {
 			promise = loadJson(url);
+			break;
+		}
+
+		case CONTENT_TYPE_GLTF: {
+			promise = loadGltf(viewer, url, params.options);
 			break;
 		}
 	}
