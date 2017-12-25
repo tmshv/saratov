@@ -42,7 +42,7 @@ export const zones = [
 	},
 	{
 		name: 'Граница тестовой территории',
-		color: '#005baa',
+		color: '#ffffff',
 		legend: {
 			theme: 'stroke',
 			strokeWidth: 3,
