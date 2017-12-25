@@ -1,5 +1,5 @@
 import Cesium from 'cesium/Cesium';
-import {zoomSignal} from '../signals';
+import {zoomSignal, settingsSignal} from '../signals';
 
 class StoredView {
 	constructor() {
@@ -33,7 +33,6 @@ class StoredView {
 }
 
 export function setupCamera(viewer) {
-	setupController(viewer);
 	createCameraDebugTool(viewer);
 
 	const initialPosition = new Cesium.Cartesian3.fromDegrees(
@@ -65,6 +64,14 @@ export function setupCamera(viewer) {
 			viewer.camera.zoomIn(value);
 		} else {
 			viewer.camera.zoomOut(Math.abs(value));
+		}
+	});
+
+	settingsSignal.on(({rotateWithClick}) => {
+		if (rotateWithClick) {
+			setupControllerForMobile(viewer);
+		} else {
+			setupControllerForDesktop(viewer);
 		}
 	});
 }
@@ -104,7 +111,7 @@ function createCameraDebugTool(viewer) {
 	window.saratov = viewer;
 }
 
-function setupController(viewer) {
+function setupControllerForDesktop(viewer) {
 	const CameraEventType = Cesium.CameraEventType;
 	const KeyboardEventModifier = Cesium.KeyboardEventModifier;
 	const scene = viewer.scene;
@@ -119,6 +126,30 @@ function setupController(viewer) {
 		{
 			eventType: CameraEventType.RIGHT_DRAG,
 			// modifier: KeyboardEventModifier.CTRL
+		},
+	];
+
+	scene.screenSpaceCameraController.zoomEventTypes = [
+		// CameraEventType.RIGHT_DRAG,
+		CameraEventType.WHEEL,
+		CameraEventType.PINCH,
+	]
+}
+
+function setupControllerForMobile(viewer) {
+	const CameraEventType = Cesium.CameraEventType;
+	const KeyboardEventModifier = Cesium.KeyboardEventModifier;
+	const scene = viewer.scene;
+
+	scene.screenSpaceCameraController.tiltEventTypes = [
+		CameraEventType.MIDDLE_DRAG,
+		CameraEventType.PINCH,
+		{
+			eventType: CameraEventType.LEFT_DRAG,
+		},
+		{
+			eventType: CameraEventType.RIGHT_DRAG,
+			modifier: KeyboardEventModifier.CTRL
 		},
 	];
 

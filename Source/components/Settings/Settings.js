@@ -14,6 +14,7 @@ import ViewportQuality from '../../models/ViewportQuality';
 			shadows: Boolean(settings.shadows),
 			blurredBackground: Boolean(settings.blurredBackground),
 			qualityMode: settings.qualityMode,
+			rotateWithClick: settings.rotateWithClick,
 			onChangeShadow: value => {
 				setOptions({
 					shadows: value,
@@ -28,6 +29,11 @@ import ViewportQuality from '../../models/ViewportQuality';
 				const qualityMode = event.target.value;
 				setQuality(qualityMode);
 			},
+			onRotateWithClick: value => {
+				setOptions({
+					rotateWithClick: value,
+				});
+			},
 		};
 	}
 )
@@ -36,6 +42,7 @@ export default class Settings extends Component {
 		const {shadows, onChangeShadow} = this.props;
 		const {blurredBackground, onChangeBlurredBackground} = this.props;
 		const {qualityMode, onChangeQuality} = this.props;
+		const {rotateWithClick, onRotateWithClick} = this.props;
 		const {options} = this.props;
 
 		return (
@@ -60,6 +67,17 @@ export default class Settings extends Component {
 							}}
 						>
 							Размытый фон
+						</Checkbox>
+					</SettingsItem>
+
+					<SettingsItem>
+						<Checkbox
+							checked={rotateWithClick}
+							onChange={() => {
+								onRotateWithClick(!rotateWithClick);
+							}}
+						>
+							Вращать при клике
 						</Checkbox>
 					</SettingsItem>
 

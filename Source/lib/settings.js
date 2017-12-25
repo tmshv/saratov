@@ -43,5 +43,6 @@ export function setDefaults() {
 		enableGlobalLighting: false,
 		qualityMode: ViewportQuality.ADAPTIVE,
 		quality: ViewportQuality.getCoef(ViewportQuality.ADAPTIVE),
+		rotateWickClick: false,
 	});
 }
