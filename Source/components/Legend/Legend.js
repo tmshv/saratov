@@ -45,7 +45,6 @@ const LegendItem = ({children, ...props}) => (
 );
 
 const ColorElement = ({theme, ...props}) => {
-	console.log(theme, props)
 	const Component = theme === 'fill'
 		? ColorBlock
 		: ColorFrame;
