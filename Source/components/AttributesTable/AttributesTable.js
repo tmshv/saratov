@@ -168,6 +168,8 @@ function createValue(name, value) {
 }
 
 function parseValue(name, value) {
+	const round = (value, n = 1) => Math.round(value * n) / n;
+
 	const attributesMultiplyCoefs = {
 		lot_dencity: 100,
 		mm_dencity: 100,
@@ -175,9 +177,21 @@ function parseValue(name, value) {
 		redline_dencity: 100,
 	};
 
+	const roundAttributes = {
+		S_lot: true,
+		S_b: true,
+		S_footprint: true,
+		S_mm: true,
+		S_green: true,
+	};
+
 	if (attributesMultiplyCoefs.hasOwnProperty(name)) {
 		const x = attributesMultiplyCoefs[name];
 		return parseFloat(value) * x;
+	}
+
+	if (roundAttributes.hasOwnProperty(name)) {
+		return round(parseFloat(value));
 	}
 
 	return value;
