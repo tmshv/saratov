@@ -1,7 +1,7 @@
 import Cesium from 'cesium/Cesium';
 
 export function loadBingImagery(viewer) {
-	Cesium.BingMapsApi.defaultKey = 'AihaXS6TtE_olKOVdtkMenAMq1L5nDlnU69mRtNisz1vZavr1HhdqGRNkB2Bcqvs'; // For use with this application only
+	Cesium.BingMapsApi.defaultKey = 'AsNwvbjFc8nFlnN6I4Z8hvqPuRlXp7F-Pn3crbWXZF8OS-wDLdgys7SllePWOqbN';
 
 	const provider = new Cesium.BingMapsImageryProvider({
 		url: 'https://dev.virtualearth.net',
