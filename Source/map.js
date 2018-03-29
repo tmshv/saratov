@@ -2,7 +2,7 @@ import Cesium from 'cesium/Cesium';
 
 import {load3dTiles} from './map/load3dTiles';
 import {loadGeojson, loadGeojsonConverts, loadGeojsonPublicSpaces, parseGeojsonOptions} from './map/loadGeojson';
-import {loadBingImagery as loadImagery} from './map/loadImagery';
+import {loadImagery} from './map/loadImagery';
 // import {loadOsmImagery as loadImagery} from './map/loadImagery'
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
@@ -300,7 +300,7 @@ function applyConfig(viewer, config) {
 	setupShadows(viewer, config)
 	setupCamera(viewer)
 	setupAdaptiveQuality(viewer)
-	loadImagery(viewer)
+	loadImagery(viewer, config)
 	initInteraction(viewer)
 }
 
