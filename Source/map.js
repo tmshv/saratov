@@ -3,6 +3,7 @@ import Cesium from 'cesium/Cesium';
 import {load3dTiles} from './map/load3dTiles';
 import {loadGeojson, loadGeojsonConverts, loadGeojsonPublicSpaces, parseGeojsonOptions} from './map/loadGeojson';
 import {loadBingImagery as loadImagery} from './map/loadImagery';
+// import {loadOsmImagery as loadImagery} from './map/loadImagery'
 import {initInteraction} from './map/interaction';
 import {setupCamera} from './map/camera';
 import {setOptions, setDefaults, setQuality} from './lib/settings';
@@ -88,9 +89,15 @@ function setupAdaptiveQuality(viewer) {
 	}
 }
 
-function setupTime(viewer) {
-	viewer.clock.startTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
-	viewer.clock.currentTime = Cesium.JulianDate.fromIso8601("2017-06-22T04:00:00Z");
+function setupShadows(viewer, {shadowsDarkness = 0.4}) {
+	const shadowMap = viewer.shadowMap
+	shadowMap.darkness = shadowsDarkness
+}
+
+function setupTime(viewer, {time = "2017-06-22T012:00:00Z"}) {
+	const date = Cesium.JulianDate.fromIso8601(time)
+	viewer.clock.startTime = date
+	viewer.clock.currentTime = date
 	// viewer.clock.multiplier = 1;
 	// viewer.clock.shouldAnimate = true; //if it was paused.
 
@@ -148,14 +155,20 @@ function loadConfig(url) {
 				.map(x => x.url);
 			return Promise.all(innerConfigUrls.map(loadJson))
 				.then(innerConfigs => {
-					const inner = join(innerConfigs
+					const innerDataSources = join(innerConfigs
 						.map(x => x.dataSource)
 					);
+					const innerConfig = innerConfigs
+						.reduce((acc, x) => ({
+							...acc,
+							...x,
+						}), {})
 					return {
 						...config,
+						...innerConfig,
 						dataSource: [
 							...dataSource,
-							...inner,
+							...innerDataSources,
 						]
 					};
 				})
@@ -238,20 +251,13 @@ export function getAttributes() {
 }
 
 export function initMap(viewer) {
-	const shadowMap = viewer.shadowMap;
-	shadowMap.darkness = 0.4;
-
-	setupApp(viewer);
-	setupTime(viewer);
-	setupCamera(viewer);
-	setupAdaptiveQuality(viewer);
-	loadImagery(viewer);
-	initInteraction(viewer);
-
-	selectedLayersSignal.on(onSelectedLayersUpdate);
+	setupGlobals(viewer)
+	selectedLayersSignal.on(onSelectedLayersUpdate)
 
 	return loadConfig('/config.json')
 		.then(config => {
+			applyConfig(viewer, config)
+
 			const base = config.base || '';
 			const dataSource = config.dataSource || [];
 			return Promise.all(dataSource
@@ -286,4 +292,19 @@ export function initMap(viewer) {
 
 	// viewer.extend(Cesium.viewerCesium3DTilesInspectorMixin);
 	// var inspectorViewModel = viewer.cesium3DTilesInspector.viewModel;
+}
+
+function applyConfig(viewer, config) {
+	setupApp(viewer)
+	setupTime(viewer, config)
+	setupShadows(viewer, config)
+	setupCamera(viewer)
+	setupAdaptiveQuality(viewer)
+	loadImagery(viewer)
+	initInteraction(viewer)
+}
+
+function setupGlobals(viewer) {
+	window.viewer = viewer
+	window.Cesium = Cesium
 }
