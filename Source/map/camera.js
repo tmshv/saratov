@@ -32,48 +32,41 @@ class StoredView {
 	}
 }
 
-export function setupCamera(viewer) {
+export function setupCamera(viewer, {camera}) {
 	createCameraDebugTool(viewer);
 
-	const initialPosition = new Cesium.Cartesian3.fromDegrees(
-		46.056233171535396309,
-		51.498024692443912897,
-		1850,
-	);
+    const {position, orientation, duration, maximumHeight, pitchAdjustHeight} = camera
+    const initialPosition = new Cesium.Cartesian3.fromDegrees(position)
 
 	const homeCameraView = {
 		destination: initialPosition,
-		orientation: {
-			heading: 5.8598696803362635,
-			pitch: -0.4101786746245062,
-			roll: 6.281716442987705,
-		},
-	};
+        orientation,
+    }
 
 	// Set the initial view
-	viewer.scene.camera.setView(homeCameraView);
+    viewer.scene.camera.setView(homeCameraView)
 
 	// Add some camera flight animation options
-	homeCameraView.duration = 2.0;
-	homeCameraView.maximumHeight = 2000;
-	homeCameraView.pitchAdjustHeight = 2000;
-	homeCameraView.endTransform = Cesium.Matrix4.IDENTITY;
+    homeCameraView.duration = duration
+    homeCameraView.maximumHeight = maximumHeight
+    homeCameraView.pitchAdjustHeight = pitchAdjustHeight
+    homeCameraView.endTransform = Cesium.Matrix4.IDENTITY
 
 	zoomSignal.on(value => {
 		if (value > 0) {
-			viewer.camera.zoomIn(value);
+            viewer.camera.zoomIn(value)
 		} else {
-			viewer.camera.zoomOut(Math.abs(value));
-		}
-	});
+            viewer.camera.zoomOut(Math.abs(value))
+        }
+    })
 
 	settingsSignal.on(({rotateWithClick}) => {
 		if (rotateWithClick) {
-			setupControllerForMobile(viewer);
+            setupControllerForMobile(viewer)
 		} else {
-			setupControllerForDesktop(viewer);
-		}
-	});
+            setupControllerForDesktop(viewer)
+        }
+    })
 }
 
 export function flyCameraTo(viewer, {lon, lat, alt}) {

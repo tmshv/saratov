@@ -298,7 +298,7 @@ function applyConfig(viewer, config) {
 	setupApp(viewer)
 	setupTime(viewer, config)
 	setupShadows(viewer, config)
-	setupCamera(viewer)
+    setupCamera(viewer, config)
 	setupAdaptiveQuality(viewer)
 	loadImagery(viewer, config)
 	initInteraction(viewer)
