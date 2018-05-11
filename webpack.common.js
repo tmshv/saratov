@@ -72,6 +72,10 @@ module.exports = {
 			{from: 'ThirdParty', to: 'ThirdParty'}
 		]),
 
+		new CopyWebpackPlugin([
+			{from: 'Resources', to: 'Resources'}
+		]),
+
 		// Copy Cesium Assets, Widgets, and Workers to a static directory
 		new CopyWebpackPlugin([{from: path.join(cesiumSource, cesiumWorkers), to: 'Workers'}]),
 		new CopyWebpackPlugin([{from: path.join(cesiumSource, 'Assets'), to: 'Assets'}]),
