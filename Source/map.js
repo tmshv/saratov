@@ -15,6 +15,44 @@ import {loadGltf} from './map/model';
 
 const layers = [];
 
+function getConfig(config) {
+    const defaultConfig = {
+        time: '2017-12-22T12:00:00Z',
+        shadowsDarkness: 0.7,
+    }
+
+    return {
+        ...defaultConfig,
+        ...config,
+        camera: {
+            ...getCameraConfig(config),
+        },
+    }
+}
+
+function getCameraConfig(config) {
+    const camera = {
+        duration: 2.0,
+        maximumHeight: 2000,
+        pitchAdjustHeight: 2000,
+        position: [
+            46.056233171535396309,
+            51.498024692443912897,
+            1850,
+        ],
+        orientation: {
+            heading: 5.8598696803362635,
+            pitch: -0.4101786746245062,
+            roll: 6.281716442987705,
+        }
+    }
+
+    return {
+        ...camera,
+        ...config.camera,
+    }
+}
+
 function setupApp(viewer) {
 	settingsSignal.on(settings => {
 		// Cask shadows
@@ -255,6 +293,7 @@ export function initMap(viewer) {
 	selectedLayersSignal.on(onSelectedLayersUpdate)
 
 	return loadConfig('/config.json')
+        .then(getConfig)
 		.then(config => {
 			applyConfig(viewer, config)
 
