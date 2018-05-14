@@ -36,7 +36,7 @@ export function setupCamera(viewer, {camera}) {
 	createCameraDebugTool(viewer);
 
     const {position, orientation, duration, maximumHeight, pitchAdjustHeight} = camera
-    const initialPosition = new Cesium.Cartesian3.fromDegrees(position)
+    const initialPosition = new Cesium.Cartesian3.fromDegrees(...position)
 
 	const homeCameraView = {
 		destination: initialPosition,
