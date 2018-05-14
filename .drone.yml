@@ -1,19 +1,18 @@
 pipeline:
   app:
-    image: node:8
+    image: docker
     commands:
-      - npm install
-      - npm run build
+      - docker build -t tmshv/saratov:latest -t tmshv/saratov:build-${DRONE_BUILD_NUMBER} .
+      - docker save -o saratov-docker_container${DRONE_BUILD_NUMBER}.tar tmshv/saratov:build-${DRONE_BUILD_NUMBER}
     when:
       branches: [master, dev]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
-  deploy:
-      image: appleboy/drone-scp
-      host: serverkb.strelka.com
-      username: saratov
-      target: ~/SaratovApp/Build_${DRONE_BUILD_NUMBER}
-      source: ./Build/*
-      secrets: [scp_key]
-      when:
-        branch: master
-        status: success
+  scp:
+    image: appleboy/drone-scp
+    host: saratov.tmshv.com
+    username: master
+    target: ~/Saratov
+    source: saratov-docker_container${DRONE_BUILD_NUMBER}.tar
+    secrets: [scp_key]

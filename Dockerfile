@@ -1,22 +1,23 @@
 # Build
-FROM node:8 as build
+FROM node:10 as build
 WORKDIR /app
 
-COPY .babelrc ./
 COPY package.json package-lock.json ./
-COPY webpack.common.js webpack.prod.js ./
+RUN npm i -g npm
 RUN npm i
 
-COPY ThirdParty ./ThirdParty
+COPY webpack.*.js .babelrc ./
+COPY Resources ./Resources
 COPY Source ./Source
+COPY ThirdParty ./ThirdParty
 COPY config.json ./
-
 RUN npm run build
 
+
 # Run
-FROM nginx:alpine
-WORKDIR /app
+FROM nginx:stable-alpine
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+WORKDIR /usr/share/nginx/html
 COPY --from=build /app/Build /usr/share/nginx/html
-
-EXPOSE 80
