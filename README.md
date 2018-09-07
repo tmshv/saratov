@@ -3,6 +3,18 @@
 - [serverkb.strelka.com](http://serverkb.strelka.com)
 - [saratov.tmshv.com](https://saratov.tmshv.com)
 
+## Update
+
+1. Modify code in `./Source`
+2. Make a commit
+3. Push it to [git.tmshv.com](https://git.tmshv.com) 
+4. Wait until it be builded by [drone.tmshv.com](https://drone.tmshv.com)
+5. SSH to saratov.tmshv.com server
+6. Cd to `~/Saratov` folder
+7. Load last build to docker with `docker load -i <file>`
+8. Remove previous container
+9. Run new container with `./run`
+
 ## Change tile provider token
 
 1. Open config file (Data/config.json)
