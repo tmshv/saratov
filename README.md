@@ -1,6 +1,13 @@
 # Саратов ОПР
 
-URL: [serverkb.strelka.com](http://serverkb.strelka.com)
+-[serverkb.strelka.com](http://serverkb.strelka.com)
+-[saratov.tmshv.com](https://saratov.tmshv.com)
+
+## Change tile provider token
+
+1. Open config file (Data/config.json)
+2. Find "imagery" section
+3. Change imagery.apiKey field
 
 ## Links
 
