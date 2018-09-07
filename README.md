@@ -19,7 +19,7 @@
 
 1. Open config file (Data/config.json)
 2. Find "imagery" section
-3. Change imagery.apiKey field
+3. Change imagery[].apiKey field
 
 ## Links
 
