@@ -1,7 +1,7 @@
 # Саратов ОПР
 
--[serverkb.strelka.com](http://serverkb.strelka.com)
--[saratov.tmshv.com](https://saratov.tmshv.com)
+- [serverkb.strelka.com](http://serverkb.strelka.com)
+- [saratov.tmshv.com](https://saratov.tmshv.com)
 
 ## Change tile provider token
 
