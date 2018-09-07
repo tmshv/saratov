@@ -10,7 +10,7 @@
     "url": "https://github.com/AnalyticalGraphicsInc/cesium-workshop"
   },
   "dependencies": {
-    "cesium": "^1.43.0",
+    "cesium": "^1.49.0",
     "classnames": "^2.2.5",
     "compression": "^1.6.2",
     "express": "^4.15",
