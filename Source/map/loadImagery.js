@@ -30,9 +30,9 @@ function createBingImageryProvider({
                                        url = 'https://dev.virtualearth.net',
                                        mapStyle = Cesium.BingMapsStyle.AERIAL
                                    }) {
-    Cesium.BingMapsApi.defaultKey = apiKey
-
+    const key = apiKey
 	const provider = new Cesium.BingMapsImageryProvider({
+        key,
         url,
         mapStyle,
 	});
