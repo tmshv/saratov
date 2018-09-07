@@ -295,6 +295,8 @@ export function initMap(viewer) {
 	return loadConfig('/config.json')
         .then(getConfig)
 		.then(config => {
+			console.log('Using config:', config)
+
 			applyConfig(viewer, config)
 
 			const base = config.base || '';
