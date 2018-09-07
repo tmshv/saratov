@@ -30,7 +30,7 @@ function createBingImageryProvider({
                                        url = 'https://dev.virtualearth.net',
                                        mapStyle = Cesium.BingMapsStyle.AERIAL
                                    }) {
-    const key = 'AsNwvbjFc8nFlnN6I4Z8hvqPuRlXp7F-Pn3crbWXZF8OS-wDLdgys7SllePWOqbN'
+    const key = apiKey
     
     Cesium.BingMapsApi.defaultKey = key
 
