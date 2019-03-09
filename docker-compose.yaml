@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  app:
+    image: tmshv/saratov
+    container_name: "saratov"
+    restart: always
+    ports:
+      - "4280:80"
