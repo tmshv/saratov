@@ -38,11 +38,11 @@ export function setDefaults() {
 
 	setOptions({
 		devicePixelRatio,
-		blurredBackground: true,
+		blurredBackground: false,
 		shadows: false,
 		enableGlobalLighting: false,
-		qualityMode: ViewportQuality.ADAPTIVE,
-		quality: ViewportQuality.getCoef(ViewportQuality.ADAPTIVE),
+		qualityMode: ViewportQuality.MEDIUM,
+		quality: ViewportQuality.getCoef(ViewportQuality.MEDIUM),
 		rotateWickClick: false,
 	});
 }
