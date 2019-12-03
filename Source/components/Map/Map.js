@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import className from 'classnames';
 import Cesium from 'cesium/Cesium';
 
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YTVlM2ZiMy0yODlmLTRlZmItYWRhNS1lY2YxOTYzNzI3ZmEiLCJpZCI6OTAxLCJpYXQiOjE1MjYyOTYyMTl9.NiwC1ghCQyCr43PQ5ZpcpGpTKNxRje-cN9SdWZBpf7c'
+
 const isFunction = f => typeof f === 'function';
 
 export default class Map extends Component {
