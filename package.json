@@ -20,7 +20,7 @@
     "yargs": "^8.0.1"
   },
   "engines": {
-    "node": "8.9.x"
+    "node": "14.x"
   },
   "scripts": {
     "build": "webpack --config webpack.prod.js",
