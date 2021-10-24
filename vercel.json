@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/Data/:path*",
+            "destination": "https://saratovcdn.tmshv.com/:path*"
+        }
+    ]
+}
