@@ -2,7 +2,7 @@
   "base": "/",
   "dataSource": [
     {
-      "url": "Data/config.json",
+      "url": "https://saratovcdn.tmshv.com/config.json",
       "contentType": "dataSource"
     }
   ]

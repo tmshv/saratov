@@ -3,6 +3,11 @@
 - [serverkb.strelka.com](http://serverkb.strelka.com)
 - [saratov.tmshv.com](https://saratov.tmshv.com)
 
+## Modified Data for CDN
+
+- 20180226/Buildings/tileset.json
+- 20171223/Dataset/tileset.json
+
 ## Update
 
 1. Modify code in `./Source`
